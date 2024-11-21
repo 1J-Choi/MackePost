@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="headerFragment">
+	<header class="bg-secondary">
+			<div class="h-100 d-flex justify-content-between mx-4 align-items-center">
+				<!-- logo -->
+				<div>
+					<h1>MarkePost</h1>
+				</div>
+				
+				 <!-- 메뉴 버튼 -->
+				
+				<!-- 로그인 및 마이페이지 -->
+				<!-- 로그인 상태 -->
+				<!-- 나의 프로필 사진이 보일 것 -->
+				<div th:if="${session.userName} != null">
+					<span th:text="${session.userName} + '님 안녕하세요'"></span>
+					<a href="/user/sign-out">로그아웃</a>
+				</div>
+				<!-- 비로그인 상태 -->
+				<!-- 프로필 사진이 없을 때 처럼 동그라미만 보일 것 -->
+				<div th:unless="${session.userName} != null">
+					<a href="/user/sign-in-view">로그인</a>
+				</div>
+			</div>
+		</header>
+</th:block>
