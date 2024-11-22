@@ -8,3 +8,6 @@ header {
 a, a:hover {
 	text-decoration: none;
 }
+.formBox {
+	background-color: #F2F2F2;
+}

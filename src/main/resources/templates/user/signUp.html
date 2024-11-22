@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/defaultLayout}">
+<section layout:fragment="content" class="contents d-flex justify-content-center">
+	<div class="w-50 rounded formBox px-5 my-5">
+		<h2 class="text-center my-3">회원가입</h2>
+		<form id="signUpForm" method="post" action="/user/sign-up">
+			<div class="input-group">
+  				<div class="input-group-prepend">
+    				<span class="input-group-text">아이디</span>
+  				</div>
+  				<input type="text" id="loginId" name="loginId" class="form-control" 
+  				placeholder="아이디를 입력하세요.">
+  				<div class="input-group-append">
+	  				<button type="button" class="btn btn-success" id="loginIdCheckBtn">중복확인</button>
+  				</div>
+			</div>
+			<div class="mb-3">
+				<!-- 아이디 체크 결과 -->
+				<div id="idCheckLength" class="small text-danger d-none">ID가 4자 아래입니다.</div>
+				<div id="idCheckDuplicated" class="small text-danger d-none">중복된 아이디입니다.</div>
+				<div id="idCheckOk" class="small text-primary d-none">사용가능한 아이디입니다.</div>
+			</div>
+			<div class="input-group mb-3">
+  				<div class="input-group-prepend">
+    				<span class="input-group-text">비밀번호</span>
+  				</div>
+  				<input type="password" id="password" name="password" class="form-control" placeholder="비밀번호를 입력하세요.">
+			</div>
+			<div class="input-group mb-3">
+  				<div class="input-group-prepend">
+    				<span class="input-group-text">비밀번호 확인</span>
+  				</div>
+  				<input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="비밀번호를 입력하세요.">
+			</div>
+			<div class="input-group mb-3">
+  				<div class="input-group-prepend">
+    				<span class="input-group-text">닉네임</span>
+  				</div>
+  				<input type="text" id="name" name="name" class="form-control" placeholder="이름을 입력하세요.">
+			</div>
+			<div class="input-group mb-3">
+  				<div class="input-group-prepend">
+    				<span class="input-group-text">이메일 주소</span>
+  				</div>
+  				<input type="email" id="email" name="email" class="form-control" placeholder="이메일 주소를 입력하세요.">
+  				<div class="input-group-append">
+	  				<button type="button" class="btn btn-success" id="emailCheckBtn">중복확인</button>
+  				</div>
+			</div>
+			<div class="mb-3">
+				<!-- 이메일 체크 결과 -->
+				<div id="emailCheckDuplicated" class="small text-danger d-none">중복된 이메일입니다.</div>
+				<div id="emailCheckOk" class="small text-primary d-none">사용가능한 이메일입니다.</div>
+			</div>
+			<button type="submit" class="btn btn-primary">회원가입</button>
+		</form>
+	</div>
+</section>
+
+<th:block layout:fragment="script">
+    <script>
+		$(document).ready(function() {
+			// 아이디 중복확인
+			$('#loginIdCheckBtn').on('click', function() {
+				// 문구 초기화
+				$('#idCheckLength').addClass('d-none');
+				$('#idCheckDuplicated').addClass('d-none');
+				$('#idCheckOk').addClass('d-none');
+				
+				// alert('중복확인 눌림');
+				let loginId = $('input[name=loginId]').val().trim();
+				// alert(loginId);
+				
+				// validation
+				if(loginId.length < 4) {
+					$('#idCheckLength').removeClass('d-none');
+					return;
+				}
+				
+				// AJAX
+				$.ajax({
+					// request
+					url:'/user/is-duplicate-id'
+					, data:{"loginId":loginId}
+					// response
+					, success:function(data) {
+						if(data.code == 200) {
+							if(data.is_duplicate_id == true) {
+								// 중복
+								$('#idCheckDuplicated').removeClass('d-none');
+							} else {
+								// 사용 가능
+								$('#idCheckOk').removeClass('d-none');
+							}
+						}
+					}
+					, error:function(e) {
+						alert('아이디 중복 확인에 실패했습니다.');
+					}
+				});
+			});
+			
+			// 이메일 중복확인
+			$('#emailCheckBtn').on('click', function() {
+				// 문구 초기화
+				$('#emailCheckDuplicated').addClass('d-none');
+				$('#emailCheckOk').addClass('d-none');
+				
+				// alert('중복확인 눌림');
+				let email = $('input[name=email]').val().trim();
+				// alert(email);
+				
+				// AJAX
+				$.ajax({
+					// request
+					url:'/user/is-duplicate-email'
+					, data:{"email":email}
+					// response
+					, success:function(data) {
+						if(data.code == 200) {
+							if(data.is_duplicate_email == true) {
+								// 중복
+								$('#emailCheckDuplicated').removeClass('d-none');
+							} else {
+								// 사용 가능
+								$('#emailCheckOk').removeClass('d-none');
+							}
+						}
+					}
+					, error:function(e) {
+						alert('이메일 중복 확인에 실패했습니다.');
+					}
+				});
+			});
+			
+			$('#signUpForm').on('submit', function(e) {
+				// alert('회원가입');
+				e.preventDefault(); // 서브밋 중단(화면 이동X)
+				
+				// validation
+				let loginId = $('#loginId').val();
+				let password = $('#password').val();
+				let confirmPassword = $('#confirmPassword').val();
+				let name = $('#name').val();
+				let email = $('#email').val();
+				
+				if(!loginId) {
+					alert('아이디를 입력하세요.');
+					return false; // submit 일때는 false가 필수
+				}
+				if(!password || !confirmPassword) {
+					alert('비밀번호를 입력하세요.');
+					return false; // submit 일때는 false가 필수
+				}
+				if(password != confirmPassword) {
+					alert('비밀번호가 일치하지 않습니다.');
+					return false; // submit 일때는 false가 필수
+				}
+				if(!name) {
+					alert('닉네임을 입력하세요.');
+					return false; // submit 일때는 false가 필수
+				}
+				if(!email) {
+					alert('이메일을 입력하세요.');
+					return false; // submit 일때는 false가 필수
+				}
+				
+				// Login 중복확인 후 사용 가능인지 확인
+				// #idCheckOk에 d-none이 있으면 alert
+				if($('#idCheckOk').hasClass('d-none')) {
+					alert('아이디 중복확인을 해주세요.');
+					return false;
+				}
+				// alert('통과');
+				
+				// 1) form 전송 => 다음 화면으로 전송
+				// $(this)[0].submit();
+				
+				// 2) ajax => 응답이 JSON
+				let url = $(this).attr('action');
+				// console.log(url);
+				let params = $(this).serialize();
+				// form 태그의 name 속성과 value를 직렬화
+				// => request 파라미터로 구성
+				// console.log(params);
+				$.post(url, params) // request
+				.done(function(data) { // response - callback
+					if(data.code == 200) { // 성공
+						alert('가입을 환영합니다! 로그인 해주세요');
+						location.href = '/user/sign-in-view';
+					} else { // 로직 상 실패
+						alert(data.error_message);
+					}
+				});
+			});
+		});
+    </script>
+</th:block>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/defaultLayout}">
+<section layout:fragment="content" class="contents d-flex justify-content-center">
+	<div class="w-50 rounded formBox px-5 my-5">
+		<h2 class="text-center my-3">로그인</h2>
+		<form id="loginForm" method="post" action="/user/sign-in">
+			<div class="input-group mb-3">
+		  		<div class="input-group-prepend">
+		    		<span class="input-group-text">아이디</span>
+		  		</div>
+		  		<input type="text" id="loginId" name="loginId" class="form-control" 
+		  		placeholder="아이디를 입력하세요.">
+			</div>
+			<div class="input-group mb-3">
+		  		<div class="input-group-prepend">
+		    		<span class="input-group-text">비밀번호</span>
+		  		</div>
+		  		<input type="password" id="password" name="password" class="form-control" placeholder="비밀번호를 입력하세요.">
+			</div>
+			<button type="submit" class="btn btn-success w-100 mb-2">로그인</button>
+			<button type="button" class="btn btn-dark w-100" onclick="location.href = '/user/sign-up-view'">회원가입</button>
+		</form>
+	</div>
+</section>
+
+<th:block layout:fragment="script">
+    <script>
+    	$(document).ready(function() {
+    		$('#loginForm').on('submit', function(e) {
+    			// alert('성공');
+    			e.preventDefault();
+    			
+    			// validation
+    			let loginId = $('#loginId').val();
+    			let password = $('#password').val();
+    			if(!loginId) {
+    				alert('아이디를 입력하세요!');
+    				return false;
+    			}
+    			if(!password) {
+    				alert('비밀번호를 입력하세요!');
+    				return false;
+    			}
+    			
+    			let url = $(this).attr("action");
+    			// console.log(url);
+    			let params = $(this).serialize(); // name 속성 필수
+    			// console.log(params);
+    			
+    			// AJAX
+    			$.post(url, params)
+    			.done(function(data) {
+    				if(data.result == "성공") { // 성공
+    					// alert('로그인 성공');
+    					location.href = '/';
+    				} else { // 실패
+    					alert(data.error_message);
+    				}
+    			});
+    		});
+    	});
+    </script>
+</th:block>
