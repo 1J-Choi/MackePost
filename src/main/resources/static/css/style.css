@@ -3,11 +3,20 @@ header {
 	height: 100px;
 }
 .contents {
-	min-height: 500px;
+	min-height: 800px;
 }
 a, a:hover {
 	text-decoration: none;
 }
 .formBox {
 	background-color: #F2F2F2;
+}
+.signForm {
+	min-height: 500px;
+}
+.img-circle{
+	border-radius: 50%;
+}
+.text-black, .text-black:hover{
+	color: #000000;
 }
