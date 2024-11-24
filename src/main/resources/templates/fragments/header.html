@@ -19,13 +19,17 @@
 				
 				<!-- 로그인 및 마이페이지 -->
 				<!-- 로그인 상태 -->
-				<div>
+				<div th:if="${session.userId} != null">
 					<!-- if userImage != null 나의 프로필 사진이 보일 것 -->
-					<th:block>
+					<th:block th:if="${session.userImage} != null">
+						<a href="/user/mypage-view">
+							<img th:src="${session.userImage}" alt="유저 프로필 사진" 
+							class="img-circle" height="80" width="80"></img>
+						</a>
 					</th:block>
 					<!-- unless userImage != null 기본 동그라미 이미지 보일 것 -->
-					<th:block>
-						<a href="#">
+					<th:block th:unless="${session.userImage} != null">
+						<a href="/user/mypage-view">
 							<img src="https://cdn.pixabay.com/photo/2021/07/25/08/03/account-6491185_1280.png" alt="유저 프로필 사진" 
 							class="img-circle" height="80" width="80"></img>
 						</a>
@@ -33,11 +37,10 @@
 				</div>
 				<!-- 비로그인 상태 -->
 				<!-- 프로필 사진이 없을 때 처럼 기본 동그라미 이미지 보일 것 -->
-				<div>
+				<div th:unless="${session.userId} != null">
 					<th:block>
-						<a href="/user/sign-in-view">
-							<img src="https://cdn.pixabay.com/photo/2021/07/25/08/03/account-6491185_1280.png" alt="유저 프로필 사진" 
-							class="img-circle" height="80" width="80"></img>
+						<a href="/user/sign-in-view" class="btn btn-dark">
+							Log-In
 						</a>
 					</th:block>
 				</div>

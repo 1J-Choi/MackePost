@@ -52,10 +52,11 @@
 			</div>
 			<div class="mb-3">
 				<!-- 이메일 체크 결과 -->
+				<div id="emailCheckRule" class="small text-danger d-none">정상적인 이메일이 아닙니다.</div>
 				<div id="emailCheckDuplicated" class="small text-danger d-none">중복된 이메일입니다.</div>
 				<div id="emailCheckOk" class="small text-primary d-none">사용가능한 이메일입니다.</div>
 			</div>
-			<button type="submit" class="btn btn-primary">회원가입</button>
+			<button type="submit" class="btn btn-primary mb-5">회원가입</button>
 		</form>
 	</div>
 </section>
@@ -106,12 +107,18 @@
 			// 이메일 중복확인
 			$('#emailCheckBtn').on('click', function() {
 				// 문구 초기화
+				$('#emailCheckRule').addClass('d-none');
 				$('#emailCheckDuplicated').addClass('d-none');
 				$('#emailCheckOk').addClass('d-none');
 				
 				// alert('중복확인 눌림');
 				let email = $('input[name=email]').val().trim();
 				// alert(email);
+				
+				if(!email.includes('@') || !(email.split('.')[1] == 'com' || email.split('.')[1] == 'net')) {
+					$('#emailCheckRule').removeClass('d-none');
+					return false;
+				}
 				
 				// AJAX
 				$.ajax({
@@ -172,6 +179,12 @@
 				// #idCheckOk에 d-none이 있으면 alert
 				if($('#idCheckOk').hasClass('d-none')) {
 					alert('아이디 중복확인을 해주세요.');
+					return false;
+				}
+				// email 중복확인 후 사용 가능인지 확인
+				// #emailCheckOk에 d-none이 있으면 alert
+				if($('#emailCheckOk').hasClass('d-none')) {
+					alert('이메일 중복확인을 해주세요.');
 					return false;
 				}
 				// alert('통과');

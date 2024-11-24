@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/defaultLayout}">
+<section layout:fragment="content" class="contents d-flex justify-content-center">
+	<div class="w-90 bg-warning">
+		<!-- 상단 정보 표시 -->
+		<section class="d-flex">
+			<!-- 프로필 이미지 -->
+			<div></div>
+			<!-- 정보 수정 버튼 & 기본 정보 & 로그아웃 버튼 -->
+			<div>
+				<!-- 정보 수정 버튼 -->
+				<div class="d-flex justify-content-end">
+					<th:block>
+						<a href="/user/user-update-view"><img src="https://www.iconninja.com/files/860/824/939/more-icon.png" alt="유저 정보수정 버튼"></a>
+					</th:block>
+				</div>
+			</div>
+		</section>
+		<!-- 최근 게시글 및 댓글 -->
+		<section class="d-flex">
+			<!-- 최근 게시글 -->
+			<aside></aside>
+			<!-- 최근 댓글 -->
+			<aside></aside>
+		</section>
+	</div>
+</section>
+
+<th:block layout:fragment="script">
+    <script>
+    	
+    </script>
+</th:block>

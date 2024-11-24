@@ -19,13 +19,15 @@ public class UserController {
 		return "user/signUp";
 	}
 	
-//	@GetMapping("/sign-out")
-//	public String signOut(HttpSession session) {
-//		session.removeAttribute("userId");
-//		session.removeAttribute("userLoginId");
-//		session.removeAttribute("userName");
-//		
-//		// 로그인 페이지로 이동
-//		return "redirect:/user/sign-in-view";
-//	}
+	@GetMapping("/sign-out")
+	public String signOut(HttpSession session) {
+		session.removeAttribute("userId");
+		session.removeAttribute("userLoginId");
+		session.removeAttribute("userName");
+		session.removeAttribute("userImage");
+		
+		// 메인페이지로 이동
+		return "redirect:/";
+	}
+
 }
