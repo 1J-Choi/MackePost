@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/defaultLayout}">
+<section layout:fragment="content" class="contents d-flex justify-content-center">
+	<div class="h-90 col-10 my-2">
+		<div class="bg-light shadow rounded my-5 p-3">
+			<h1>게시판 생성</h1>
+			<div>
+				<div class="input-group mb-3">
+  					<div class="input-group-prepend">
+    					<span class="input-group-text">게시판 이름</span>
+  					</div>
+  					<input type="text" id="name"class="form-control" placeholder="이름을 입력하세요.">
+  					<div class="input-group-append">
+	  					<button type="button" class="btn btn-success" id="nameCheckBtn">중복확인</button>
+  					</div>
+				</div>
+				<div class="mb-3">
+				<!-- 게시판 이름 체크 결과 -->
+					<div id="nameCheckLength" class="small text-danger d-none">2자 이상의 게시판 이름을 사용해야합니다.</div>
+					<div id="nameCheckDuplicated" class="small text-danger d-none">중복된 게시판 이름입니다.</div>
+					<div id="nameCheckOk" class="small text-primary d-none">사용가능한 게시판 이름입니다.</div>
+				</div>
+				<div class="input-group mb-3">
+  					<div class="input-group-prepend">
+    					<span class="input-group-text">게시판 소개</span>
+  					</div>
+  					<input type="text" id="introduce" class="form-control" placeholder="게시판 소개를 입력하세요">
+				</div>
+				
+				<!-- 이미지 -->
+				<div class="d-flex justify-content-start">
+					<input type="file" id="file" accept=".jpg, .png, .gif">
+				</div>
+				
+				<!-- 생성 버튼 -->
+				<div class="d-flex justify-content-end">
+					<button type="button" id="boardCreateBtn" class="btn btn-primary shadow">생성하기</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<th:block layout:fragment="script">
+    <script>
+    	$(document).ready(function(){
+    		$('#nameCheckBtn').on('click', function() {
+    			$('#nameCheckLength').addClass('d-none');
+    			$('#nameCheckDuplicated').addClass('d-none');
+    			$('#nameCheckOk').addClass('d-none');
+    			
+    			let name = $('#name').val();
+    			// alert(name);
+    			
+    			if(name.length < 2) {
+    				$('#nameCheckLength').removeClass('d-none');
+    				return;
+    			}
+    			// alert('통과!');
+    			
+    			$.ajax({
+    				url:'/board/is-duplicate-name'
+    				, data:{
+    					'name':name
+    				}
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						if(data.is_duplicate_name == true) {
+    							// 중복됨
+    							$('#nameCheckDuplicated').removeClass('d-none');
+    						} else {
+    							// 사용 가능
+    							$('#nameCheckOk').removeClass('d-none');
+    						}
+    					}
+    				}
+    				, error:function(e) {
+    					alert('게시판 이름 중복 체크에 실패하였습니다.');
+    				}
+    			});
+    		});
+    		
+    		$('#boardCreateBtn').on('click', function() {
+    			let name = $('#name').val().trim();
+    			let introduce = $('#introduce').val().trim();
+    			let fileName = $('#file').val();
+    			// console.log(introduce);
+    			
+    			// validation
+    			if(!name) {
+    				alert('게시판 이름을 입력하세요');
+    				return;
+    			}
+    			if(!introduce) {
+    				alert('게시판 소개를 입력하세요');
+    				return;
+    			}
+    			if(fileName) {
+    				// alert('이미지 있다');
+    				let extension = fileName.split('.').pop().toUpperCase();
+    				// console.log(extension);
+    				if($.inArray(extension, ['JPG', 'PNG', 'GIF']) == -1) {
+    					// 배열중에 있을 시에는 index 번호, 없으면 -1
+    					alert('이미지 파일(jpg, png, gif)만 업로드 할 수 있습니다.');
+    					$('#file').val('');
+    					return;
+    				}
+    			}
+    			if($('#nameCheckOk').hasClass('d-none')) {
+					alert('게시판 이름 중복확인을 해주세요.');
+					return;
+				}
+    			
+    			let formData = new FormData();
+    			formData.append("name", name); // key는 form의 name과 같음 - request param명
+    			formData.append("introduce", introduce);
+    			formData.append("file", $('#file')[0].files[0]);
+    			// console.log($('#file')[0].files[0]);
+    			
+    			// AJAX
+    			$.ajax({
+    				// request
+    				type:"POST"
+    				, url:"/board/create"
+    				, data:formData // FormData 통째로 보낼 수 있다
+    				// FormData로 보낼 때 아래 3가지 옵션이 필수적
+    				, processData:false // data의 속성의 값이 문자열 처리되지 않게함
+    				, contentType:false // 헤더에 콘텐츠 타입을 false로 해제
+    				, enctype:"multipart/form-data" // 이미지 파일이 전송되게 하는 옵션
+    				// response
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						// 성공일 때 alert => 목록 화면
+    						alert('게시판 등록 완료!');
+    						location.href = '/';
+    					} else {
+    						// 로직 상 실패일 때 alert
+    						alert(data.error_message);
+    					}
+    				}
+    				, error:function(e) {
+    					alert('게시판을 등록하는데 실패했습니다.');
+    				}
+    			});
+    		});
+    	});
+    </script>
+</th:block>

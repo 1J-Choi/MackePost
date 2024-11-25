@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.markepost.board.mapper.BoardMapper">
+	<select id="selectBoardByName" 
+	parameterType="string" 
+	resultType="com.markepost.board.domain.Board">
+		SELECT
+			`id`
+			, `name`
+			, `introduce`
+			, `imagePath`
+			, `createdAt`
+			, `updatedAt`
+		FROM
+			`board`
+		WHERE
+			`name` = #{name}
+	</select>
+	<insert id="insertBoard" 
+	parameterType="com.markepost.board.domain.Board" 
+	useGeneratedKeys="true" 
+	keyProperty="id" 
+	keyColumn="id">
+		INSERT INTO `board`
+		(
+			`name`
+			, `introduce`
+			<if test="imagePath != null">
+			, `imagePath`
+			</if>
+			, `createdAt`
+			, `updatedAt`
+		)
+		VALUES
+		(
+			#{name}
+			, #{introduce}
+			<if test="imagePath != null">
+			, #{imagePath}
+			</if>
+			, NOW()
+			, NOW()
+		)
+	</insert>
+</mapper>
