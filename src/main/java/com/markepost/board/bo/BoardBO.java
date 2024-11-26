@@ -1,13 +1,20 @@
 package com.markepost.board.bo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.markepost.admin.bo.AdminBO;
 import com.markepost.board.domain.Board;
+import com.markepost.board.domain.SearchBoardDTO;
 import com.markepost.board.mapper.BoardMapper;
 import com.markepost.common.FileManagerService;
+import com.markepost.tag.bo.TagBO;
+import com.markepost.tag.constant.TagType;
+import com.markepost.tag.entity.TagEntity;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class BoardBO {
 	private final BoardMapper boardMapper;
 	private final AdminBO adminBO;
+	private final TagBO tagBO;
 	private final FileManagerService fileManager;
 	
 	public Board getBoardByName(String name) {
@@ -44,5 +52,33 @@ public class BoardBO {
 		adminBO.createAdmin(userId, userId, true);
 		
 		return board;
+	}
+	
+	public List<SearchBoardDTO> getSearchBoards(String name) {
+		List<SearchBoardDTO> searchBoardDTOs = new ArrayList<>();
+		List<Board> searchBoard = boardMapper.selectBoardList(name);
+		// 검색어가 없을 때 (초기 화면)
+		for(Board board : searchBoard) {
+			SearchBoardDTO searchBoardDTO = new SearchBoardDTO();
+			searchBoardDTO.setBoard(board);
+			
+			// 인게임,실물 거래 태그 유무 찾기
+			searchBoardDTO.setHasIngameTag(false);
+			searchBoardDTO.setHasRealTag(false);
+			List<TagEntity> tags = tagBO.getTagListByBoardId(board.getId());
+			for(TagEntity tag : tags) {
+				if (tag.getTagType().equals(TagType.INGAME)) {
+					searchBoardDTO.setHasIngameTag(true);
+					continue;
+				}
+				if (tag.getTagType().equals(TagType.REAL)) {
+					searchBoardDTO.setHasRealTag(true);
+					continue;
+				}
+			}
+			searchBoardDTOs.add(searchBoardDTO);
+		}
+		
+		return searchBoardDTOs;
 	}
 }

@@ -5,12 +5,52 @@
       layout:decorate="~{layout/defaultLayout}">
 <section layout:fragment="content" class="contents d-flex justify-content-center">
 	<div class="h-90 col-10 my-2">
-		<h1>게시판 검색</h1>
+		<div class="bg-light shadow rounded my-5 p-3">
+			<h1>게시판 검색</h1>
+			<table class="table text-center mt-3">
+				<thead>
+					<tr>
+						<th>No.</th>
+						<th>이름</th>
+						<th>소개</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="board, status : ${searchBoards}">
+						<td th:text="${status.count}"></td>
+						<td th:text="${board.board.name}">	</td>
+						<td th:text="${board.board.introduce}" class="text-sm text-secondary"></td>
+						<td>
+							<th:block th:if="${board.hasIngameTag}">
+								<div class="bg-warning rounded shadow">인게임거래</div>
+							</th:block>
+							<th:block th:if="${board.hasRealTag}">
+								<div class="bg-orange rounded shadow">실물거래</div>
+							</th:block>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="d-flex justify-content-end">
+			<form th:action="@{/board/search}" method="get" class="my-2 col-6">
+				<div class="input-group">
+					<input type="text" id="name" name="name" class="form-control" placeholder="검색할 게시판 이름을 입력하세요."
+					th:value="${name}">
+	  				<div class="input-group-append">
+		  				<button type="submit" class="btn btn-primary" id="nameSearchBtn">검색</button>
+	  				</div>
+				</div>
+			</form>
+			</div>
+		</div>
 	</div>
 </section>
 
 <th:block layout:fragment="script">
     <script>
-    	
+    	$(document).ready(function() {
+    		
+    	});
     </script>
 </th:block>

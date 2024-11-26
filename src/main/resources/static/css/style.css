@@ -20,3 +20,6 @@ a, a:hover {
 .text-black, .text-black:hover{
 	color: #000000;
 }
+.bg-orange {
+	background-color: orange;
+}
