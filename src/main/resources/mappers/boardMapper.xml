@@ -44,7 +44,7 @@
 		)
 	</insert>
 	<select id="selectBoardList" 
-	parameterType="string" 
+	parameterType="map" 
 	resultType="com.markepost.board.domain.Board">
 		SELECT
 			`id`
@@ -53,6 +53,18 @@
 			, `imagePath`
 			, `createdAt`
 			, `updatedAt`
+		FROM
+			`board`
+		WHERE
+			`name` LIKE '%${name}%'
+		LIMIT #{pageSize}
+		OFFSET #{offset}
+	</select>
+	<select id="countBoards" 
+	parameterType = "string"
+	resultType="int">
+		SELECT
+			COUNT(*)
 		FROM
 			`board`
 		<if test="name != null">

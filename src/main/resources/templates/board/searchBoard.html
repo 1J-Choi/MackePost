@@ -32,6 +32,16 @@
 					</tr>
 				</tbody>
 			</table>
+			<!-- 페이지 -->
+			<div>
+    			<div class="d-flex justify-content-center">
+        			<a th:if="${page > 1}" th:href="@{/board/search(name=${name}, page=${page - 1})}">Previous</a>
+	    			<span th:text="'Page ' + ${page} + ' of ' + ${totalPages}" class="mx-3"></span>
+        			<a th:if="${page < totalPages}" th:href="@{/board/search(name=${name}, page=${page + 1})}">Next</a>
+    			</div>
+			</div>
+			
+			<!-- 검색창 -->
 			<div class="d-flex justify-content-end">
 			<form th:action="@{/board/search}" method="get" class="my-2 col-6">
 				<div class="input-group">

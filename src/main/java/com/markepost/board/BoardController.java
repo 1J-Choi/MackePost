@@ -30,21 +30,33 @@ public class BoardController {
 	}
 	
 	@GetMapping("/search-board-view")
-	public String searchBoard(Model model) {
-		List<SearchBoardDTO> searchBoards = boardBO.getSearchBoards(null);
+	public String searchBoard(Model model, 
+			@RequestParam(value = "page", defaultValue = "1") int page) {
+		List<SearchBoardDTO> searchBoards = boardBO.getSearchBoards("", page);
+		int totalCount = boardBO.count(null);
+		int totalPages = (int) Math.ceil((double) totalCount / 10);
+		
 		model.addAttribute("searchBoards", searchBoards);
 		model.addAttribute("name", "");
+		model.addAttribute("page", page);
+		model.addAttribute("totalPages", totalPages);
+		
 		return "board/searchBoard";
 	}
 	
 	@GetMapping("/search")
 	public String searchBoard(
-			@RequestParam(value = "name", required = false) String name, 
-			@RequestParam(value = "page", required = false) Integer page, 
+			@RequestParam("name") String name, 
+			@RequestParam(value = "page", defaultValue = "1") int page, 
 			Model model) {
-		List<SearchBoardDTO> searchBoards = boardBO.getSearchBoards(name);
+		List<SearchBoardDTO> searchBoards = boardBO.getSearchBoards(name, page);
+		int totalCount = boardBO.count(name);
+		int totalPages = (int) Math.ceil((double) totalCount / 10);
+		
 		model.addAttribute("searchBoards", searchBoards);
 		model.addAttribute("name", name);
+		model.addAttribute("page", page);
+		model.addAttribute("totalPages", totalPages);
 		return "board/searchBoard";
 	}
 }

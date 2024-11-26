@@ -26,6 +26,7 @@ public class BoardBO {
 	private final AdminBO adminBO;
 	private final TagBO tagBO;
 	private final FileManagerService fileManager;
+	private static final int PAGE_SIZE = 10;
 	
 	public Board getBoardByName(String name) {
 		return boardMapper.selectBoardByName(name);
@@ -54,9 +55,11 @@ public class BoardBO {
 		return board;
 	}
 	
-	public List<SearchBoardDTO> getSearchBoards(String name) {
+	public List<SearchBoardDTO> getSearchBoards(String name, int page) {
 		List<SearchBoardDTO> searchBoardDTOs = new ArrayList<>();
-		List<Board> searchBoard = boardMapper.selectBoardList(name);
+		List<Board> searchBoard;
+		int offset = (page - 1) * PAGE_SIZE;
+		searchBoard = boardMapper.selectBoardList(name, PAGE_SIZE, offset);
 		// 검색어가 없을 때 (초기 화면)
 		for(Board board : searchBoard) {
 			SearchBoardDTO searchBoardDTO = new SearchBoardDTO();
@@ -81,4 +84,8 @@ public class BoardBO {
 		
 		return searchBoardDTOs;
 	}
+	
+	public int count(String name) {
+        return boardMapper.countBoards(name);
+    }
 }
