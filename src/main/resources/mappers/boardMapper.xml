@@ -67,9 +67,7 @@
 			COUNT(*)
 		FROM
 			`board`
-		<if test="name != null">
 		WHERE
 			`name` LIKE '%${name}%'
-		</if>
 	</select>
 </mapper>

@@ -57,9 +57,8 @@ public class BoardBO {
 	
 	public List<SearchBoardDTO> getSearchBoards(String name, int page) {
 		List<SearchBoardDTO> searchBoardDTOs = new ArrayList<>();
-		List<Board> searchBoard;
 		int offset = (page - 1) * PAGE_SIZE;
-		searchBoard = boardMapper.selectBoardList(name, PAGE_SIZE, offset);
+		List<Board> searchBoard = boardMapper.selectBoardList(name, PAGE_SIZE, offset);
 		// 검색어가 없을 때 (초기 화면)
 		for(Board board : searchBoard) {
 			SearchBoardDTO searchBoardDTO = new SearchBoardDTO();
