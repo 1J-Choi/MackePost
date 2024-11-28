@@ -8,4 +8,5 @@ import com.markepost.tag.entity.TagEntity;
 
 public interface TagRepository extends JpaRepository<TagEntity, Integer>{
 	public List<TagEntity> findByBoardId(int boardId);
+	public TagEntity findByBoardIdAndTagName(int boardId, String tagName);
 }

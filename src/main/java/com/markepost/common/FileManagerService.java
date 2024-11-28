@@ -2,6 +2,7 @@ package com.markepost.common;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,10 +20,10 @@ public class FileManagerService {
 	
 	// input: MultipartFile, userLoginId
 		// output: String(이미지 경로)
-		public String uploadFile(MultipartFile file, String loginId) {
+		public String uploadFile(MultipartFile file, String name) {
 			// 폴더(디렉토리) 생성
 			// ex: aaaa_17237482334/sun.png
-			String directoryName = loginId + "_" + System.currentTimeMillis(); // aaaa_17237482334
+			String directoryName = name + "_" + System.currentTimeMillis(); // aaaa_17237482334
 			// C:\\Users\\최원제\\Desktop\\WJ\\공부\\코딩\\백엔드\\학원\\신보람\\6_spring_project\\memo\\memo_workspace\\images/aaaa_17237482334/
 			String filePath = FILE_UPLOAD_PATH + directoryName + "/";
 			
@@ -35,6 +36,7 @@ public class FileManagerService {
 			// 파일 업로드 (오류가 발생하더라도 null이 BO에게 반환되어야 한다)
 			try {
 				byte[] bytes = file.getBytes();
+				
 				// ★★★★★ 나중에 파일명을 영문자로 변경할 것!(한글명은 업로드 불가) ★★★★★
 				Path path = Paths.get(filePath + file.getOriginalFilename());
 				Files.write(path, bytes);

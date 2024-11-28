@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.markepost.board.bo.BoardBO;
+import com.markepost.board.domain.BoardDetailDTO;
 import com.markepost.board.domain.SearchBoardDTO;
 
 import jakarta.servlet.http.HttpSession;
@@ -58,5 +59,18 @@ public class BoardController {
 		model.addAttribute("page", page);
 		model.addAttribute("totalPages", totalPages);
 		return "board/searchBoard";
+	}
+	
+	@GetMapping("/post-list-view")
+	public String boardDetail(
+			@RequestParam("boardId") int boardId,
+			Model model, HttpSession session) {
+		Integer userId = (Integer) session.getAttribute("userId");
+		
+		BoardDetailDTO boardDetailDTO = boardBO.getBoardDetailDTOByBoardId(boardId, userId);
+		
+		model.addAttribute("boardDetailDTO", boardDetailDTO);
+		
+		return "board/boardDetail";
 	}
 }

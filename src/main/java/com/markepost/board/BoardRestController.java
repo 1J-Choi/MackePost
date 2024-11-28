@@ -54,7 +54,7 @@ public class BoardRestController {
 			@RequestParam("introduce") String introduce,
 			@RequestParam(value = "file", required = false) MultipartFile file,
 			HttpSession session) {
-		// session 에서 userId(로그인 상태 확인용), userLoginId(이미지 파일 폴더명) 추출
+		// session 에서 userId(로그인 상태 확인용) 추출
 		Integer userId = (Integer) session.getAttribute("userId");
 		String userLoginId = (String) session.getAttribute("userLoginId");
 		

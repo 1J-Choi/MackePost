@@ -16,4 +16,9 @@ public interface BoardMapper {
 			@Param("pageSize") int pageSize, 
 			@Param("offset") int offset);
 	public int countBoards(String name);
+	public Board selectBoardById(int boardId);
+	public int updateBoardByPostId(
+			@Param("boardId")int boardId, 
+			@Param("introduce") String introduce, 
+			@Param("imagePath") String imagePath);
 }

@@ -17,6 +17,21 @@
 		WHERE
 			`name` = #{name}
 	</select>
+	<select id="selectBoardById" 
+	parameterType="int" 
+	resultType="com.markepost.board.domain.Board">
+		SELECT
+			`id`
+			, `name`
+			, `introduce`
+			, `imagePath`
+			, `createdAt`
+			, `updatedAt`
+		FROM
+			`board`
+		WHERE
+			`id` = #{boardId}
+	</select>
 	<insert id="insertBoard" 
 	parameterType="com.markepost.board.domain.Board" 
 	useGeneratedKeys="true" 
@@ -70,4 +85,16 @@
 		WHERE
 			`name` LIKE '%${name}%'
 	</select>
+	<update id="updateBoardByPostId" 
+	parameterType="map">
+		UPDATE `board`
+		SET
+			`introduce` = #{introduce}
+			<if test="imagePath != null">
+			, `imagePath` = #{imagePath}
+			</if>
+			, `updatedAt` = NOW()
+		WHERE
+			`id` = #{boardId}
+	</update>
 </mapper>

@@ -8,7 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.markepost.admin.bo.AdminBO;
+import com.markepost.admin.entity.AdminDto;
+import com.markepost.admin.entity.AdminEntity;
 import com.markepost.board.domain.Board;
+import com.markepost.board.domain.BoardDetailDTO;
 import com.markepost.board.domain.SearchBoardDTO;
 import com.markepost.board.mapper.BoardMapper;
 import com.markepost.common.FileManagerService;
@@ -34,7 +37,7 @@ public class BoardBO {
 	
 	public Board addBoard(String name, String introduce, 
 			MultipartFile file, int userId, String userLoginId) {
-		// 게시판 프로필 이미지 폴더명의 경우 loginId + "_board"의 형태를 가지게 함
+		// 게시판 프로필 이미지 폴더명의 경우 boardName + "_board"의 형태를 가지게 함
 		String imagePath = null;
 		if(file != null) {
 			imagePath = fileManager.uploadFile(file, userLoginId + "_board");
@@ -50,7 +53,7 @@ public class BoardBO {
 		
 		// 만들어진 게시판의 admin을 생성한 user로 설정
 		// mainAdmin이기 때문에 adminType을 true로 한다
-		adminBO.createAdmin(userId, userId, true);
+		adminBO.createAdmin(board.getId(), userId, true);
 		
 		return board;
 	}
@@ -87,4 +90,45 @@ public class BoardBO {
 	public int count(String name) {
         return boardMapper.countBoards(name);
     }
+	
+	public BoardDetailDTO getBoardDetailDTOByBoardId(int boardId, Integer userId) {
+		BoardDetailDTO boardDetailDTO = new BoardDetailDTO();
+		Board board = boardMapper.selectBoardById(boardId);
+		List<AdminDto> adminDtos = adminBO.getAdminByBoardId(boardId);
+		boolean isAdmin = adminBO.existsByboardIdAndUserId(boardId, userId);
+		List<TagEntity> tags = tagBO.getTagListByBoardId(boardId);
+		// 나중에 구현할 postDTO 받아오기
+		// List<PostDTO> posts = postBO.getPostListByBoardIdAndPage(int boardId, int page);
+		
+		boardDetailDTO.setBoard(board);
+		boardDetailDTO.setAdminDtos(adminDtos);
+		boardDetailDTO.setTags(tags);
+		boardDetailDTO.setAdmin(isAdmin);
+		// is로 시작하는 boolean의 경우 메소드 명에서 is가 생략된다!
+		//boardDetailDTO.setPosts(posts);
+		
+		return boardDetailDTO;
+	}
+	
+	public int updateBoard(int boardId, String introduce, 
+			MultipartFile file, int userId, String userLoginId) {
+		Board board = boardMapper.selectBoardById(boardId);
+		if(board == null) {
+			return 0;
+		}
+		
+		String imagePath = null;
+		if(file != null) {
+			// 새 프로필 이미지 업로드
+			imagePath = fileManager.uploadFile(file, userLoginId + "_board");
+			// 업로드 성공 시 기존 이미지 존재하면 삭제
+			if(imagePath != null && board.getImagePath() != null) {
+				// 이미지, 폴더 삭제하기
+				fileManager.deleteFile(board.getImagePath());
+			}
+		}
+		
+		//DB update
+		return boardMapper.updateBoardByPostId(boardId, introduce, imagePath);
+	}
 }

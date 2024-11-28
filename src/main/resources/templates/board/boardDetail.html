@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/defaultLayout}">
+<section layout:fragment="content" class="contents d-flex justify-content-center">
+	<div class="h-90 col-10 my-2">
+		<div class="bg-light shadow rounded my-5 p-3">
+			<!-- 프로필 사진, 이름, 자기소개, 설정메뉴 -->
+			<div class="d-flex  align-items-center justify-content-between">
+			 	<div class="d-flex">
+					<div class="d-flex align-items-center">
+						<!-- 프로필 사진 -->
+						<!-- 사진 있을 때 -->
+						<th:block th:if="${boardDetailDTO.board.imagePath} != null">
+							<img th:src="${boardDetailDTO.board.imagePath}" alt="게시판 프로필 이미지" 
+							height="35" width="35" class="img-circle shadow mr-2">
+						</th:block>
+						<!-- 사진 없을 땐 그냥 표시 X -->
+					</div>
+					<!-- 이름 -->
+					<h1><span th:text="${boardDetailDTO.board.name}"></span> 게시판</h1>
+					
+					<!-- 게시판 소개 -->
+					<div class="d-flex align-items-lg-end">
+						<h5 th:text="${boardDetailDTO.board.introduce}" class="text-secondary ml-1"></h5>
+					</div>
+			 	</div>
+				<!-- 설정 버튼 -->
+				<div th:if="${boardDetailDTO.isAdmin}">
+					<a th:href="|/admin/board/board-setting-view?boardId=${boardDetailDTO.board.id}|">
+						<img src="https://www.iconninja.com/files/860/824/939/more-icon.png" alt="게시판 정보수정 버튼" height="30">
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<th:block layout:fragment="script">
+    <script>
+    	
+    </script>
+</th:block>

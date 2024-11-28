@@ -23,3 +23,10 @@ a, a:hover {
 .bg-orange {
 	background-color: orange;
 }
+.drag-prevent{
+    -ms-user-select: none;
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+}

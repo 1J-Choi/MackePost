@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/defaultLayout}">
+<section layout:fragment="content" class="contents d-flex justify-content-center">
+	<div class="h-90 col-10 my-2">
+		<h1 class="mt-2">게시판 설정화면</h1>
+		<!-- 기본 설정 -->
+		<div class="bg-light shadow rounded my-3 p-3">
+			<h2>게시판 기본 설정</h2>
+			<div>
+				<div class="input-group mb-3">
+  					<div class="input-group-prepend">
+    					<span class="input-group-text">이름</span>
+  					</div>
+  					<input th:value="${boardDetailDTO.board.name}" type="text" id="name"class="form-control" disabled/>
+				</div>
+				<div class="input-group mb-3">
+   					<div class="input-group-prepend">
+    					<span class="input-group-text">게시판 소개</span>
+  					</div>
+  					<input th:value="${boardDetailDTO.board.introduce}" id="introduce" class="form-control" placeholder="자기소개를 입력하세요">
+				</div>
+				
+				<!-- 이미지 -->
+				<div class="d-flex justify-content-start">
+					<input type="file" id="file" accept=".jpg, .png, .gif">
+				</div>
+				
+				<!-- 수정 버튼 -->
+				<div class="d-flex justify-content-end">
+					<button type="button" id="boardUpdateBtn" class="btn btn-success shadow" 
+					th:data-board-id="${boardDetailDTO.board.id}">정보수정</button>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 태그 설정 -->
+		<div class="bg-light shadow rounded my-3 p-3">
+			<h2>게시판 태그 설정</h2>
+			<!-- 태그 등록 -->
+			<div>
+				<div class="input-group mb-3">
+					<div class="input-group-prepend">
+    					<span class="input-group-text">태그 이름</span>
+  					</div>
+  					<input type="text" id="tagName" class="form-control" placeholder="태그 이름을 입력하세요">
+  					<div class="input-group-append">
+	  					<div>
+	  						<select class="select form-control" id="tagTypeString">
+	  							<option value="NORMAL">일반</option>
+	  							<option value="INGAME/SELL">인게임/판매</option>
+	  							<option value="INGAME/BUY">인게임/구매</option>
+	  							<option value="INGAME/EXCHANGE">인게임/교환</option>
+	  							<option value="INGAME/OTHER">인게임/기타</option>
+	  							<option value="REAL/SELL">실물/판매</option>
+	  							<option value="REAL/BUY">실물/구매</option>
+	  							<option value="REAL/EXCHANGE">실물/교환</option>
+	  							<option value="REAL/OTHER">실물/기타</option>
+	  						</select>
+	  					</div>
+  						<button type="button" id="addTagBtn" class="btn btn-primary" 
+  						th:data-board-id="${boardDetailDTO.board.id}">등록</button>
+  					</div>
+				</div>
+			</div>
+			
+			<!-- 태그 나열 -->
+			<div class="d-flex flex-wrap p-1">
+				<th:block th:each="tag : ${boardDetailDTO.tags}">
+					<!-- 일반 태그 => 회색 -->
+					<div th:if="${tag.tagType.name() == 'NORMAL'}" 
+					class="rounded bg-secondary p-1 mr-1 mb-1 shadow-sm" th:text="${tag.tagName}"></div>
+					<!-- 인게임 태그 => 노랑 -->
+					<div th:if="${tag.tagType.name() == 'INGAME'}" 
+					class="rounded bg-warning p-1 mr-1 mb-1 shadow-sm" th:text="${tag.tagName}"></div>
+					<!-- 실물 태그 => 오렌지 -->
+					<div th:if="${tag.tagType.name() == 'REAL'}" 
+					class="rounded bg-orange p-1 mr-1 mb-1 shadow-sm" th:text="${tag.tagName}"></div>
+				</th:block>
+			</div>
+		</div>
+		
+		<!-- admin 설정 -->
+		<div class="bg-light shadow rounded my-3 p-3">
+			<h2>게시판 관리자 설정</h2>
+			<div>
+				<div class="input-group mb-3">
+					<div class="input-group-prepend">
+    					<span class="input-group-text">아이디</span>
+  					</div>
+  					<input type="text" id="adminLoginId" class="form-control" placeholder="태그 이름을 입력하세요">
+  					<div class="input-group-append">
+  						<button type="button" id="idCheckBtn" class="btn btn-success" 
+  						th:data-board-id="${boardDetailDTO.board.id}">아이디 조회</button>
+  						<button type="button" id="addAdminBtn" class="btn btn-primary" 
+  						th:data-board-id="${boardDetailDTO.board.id}">등록</button>
+  					</div>
+				</div>
+				<div class="mb-2">
+					<!-- 아이디 체크 결과 -->
+					<div id="idCheckLength" class="small text-danger d-none">ID가 4자 아래입니다.</div>
+					<div id="idCheckNone" class="small text-danger d-none">존재하지 않는 ID입니다.</div>
+					<div id="idCheckDuplicated" class="small text-danger d-none">이미 존재하는 Admin입니다.</div>
+					<div id="idCheckOk" class="small text-primary d-none">Admin으로 등록할 수 있는 아이디입니다.</div>
+				</div>
+			</div>
+			
+			<!-- admin 나열 -->
+			<div class="d-flex flex-wrap p-1">
+				<th:block th:each="adminDto : ${boardDetailDTO.adminDtos}">
+					<!-- mainAdmin => 노란색, 삭제 불가 -->
+					<div th:if="${adminDto.adminType}" 
+					class="rounded bg-warning p-1 mr-1 mb-1 shadow-sm">
+						<span th:text="${adminDto.name}"></span>
+						<span th:text="|(${adminDto.loginId})|" class="text-sm text-light"></span>
+					</div>
+					<!-- subAdmin => 회색, 삭제 가능 -->
+					<div th:unless="${adminDto.adminType}" 
+					class="rounded bg-secondary p-1 mr-1 mb-1 shadow-sm">
+						<span th:text="${adminDto.name}"></span>
+						<span th:text="|(${adminDto.loginId})|" class="text-sm text-light"></span>
+						<a class="adminDelete text-dark drag-prevent" th:data-board-id="${boardDetailDTO.board.id}" 
+						th:data-user-id="${adminDto.userId}">×</a>
+					</div>
+				</th:block>
+			</div>
+		</div>
+		
+		<!-- 하단버튼 (게시판으로, 신고 목록으로, 게시판 삭제) -->
+		<div class="d-flex justify-content-between">
+			<a th:href="|/board/post-list-view?boardId=${boardDetailDTO.board.id}|" 
+			class="btn btn-secondary">게시판으로</a>
+			<div class="d-flex">
+				<a th:href="|/admin/report/report-list-view?boardId=${boardDetailDTO.board.id}|" class="btn btn-warning mr-1">신고 목록으로</a>
+				<button type="button" id="boardDeleteBtn" class="btn btn-danger">게시판 삭제</button>
+			</div>
+		</div>
+	</div>
+</section>
+
+<th:block layout:fragment="script">
+    <script>
+    	$(document).ready(function() {
+    		// 게시판 자기소개, 이미지 수정
+    		$('#boardUpdateBtn').on('click', function() {
+    			let boardId = $(this).data('board-id');
+    			let introduce = $('#introduce').val();
+    			let fileName = $('#file').val();
+    			console.log(boardId);
+    			console.log(introduce);
+    			console.log(file);
+    			
+    			// validation
+    			if(fileName) {
+    				// alert('이미지 있다');
+    				let extension = fileName.split('.').pop().toUpperCase();
+    				// console.log(extension);
+    				if($.inArray(extension, ['JPG', 'PNG', 'GIF']) == -1) {
+    					// 배열중에 있을 시에는 index 번호, 없으면 -1
+    					alert('이미지 파일(jpg, png, gif)만 업로드 할 수 있습니다.');
+    					$('#file').val('');
+    					return;
+    				}
+    			}
+    			
+    			let formData = new FormData();
+    			formData.append("boardId", boardId);
+    			formData.append("introduce", introduce);
+    			formData.append("file", $('#file')[0].files[0]);
+    			
+    			// AJAX
+    			$.ajax({
+    				// request
+    				type:"PATCH"
+    				, url:"/admin/board/update"
+    				, data:formData // FormData 통째로 보낼 수 있다
+    				// FormData로 보낼 때 아래 3가지 옵션이 필수적
+    				, processData:false // data의 속성의 값이 문자열 처리되지 않게함
+    				, contentType:false // 헤더에 콘텐츠 타입을 false로 해제
+    				, enctype:"multipart/form-data" // 이미지 파일이 전송되게 하는 옵션
+    				// response
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						// 성공일 때 alert => 새로고침
+    						alert('수정 완료!');
+    						location.href = location.href;
+    					/*} else if(data.code == 403) {
+    						// admin 아닐 때 => 로그인 화면
+    						alert(data.error_message);
+    						location.href = '/user/sign-in-view';*/
+    					} else {
+    						// 로직 상 실패일 때 alert
+    						alert(data.error_message);
+    					}
+    				}
+    				, error:function(e) {
+    					alert('게시판 정보를 수정하는데 실패했습니다.');
+    				}
+    			});
+    		});
+    		
+    		// 태그 등록
+    		$('#addTagBtn').on('click', function() {
+    			let boardId = $(this).data('board-id');
+    			let tagName = $('#tagName').val();
+    			let tagTypeString = $('#tagTypeString').val();
+    			// console.log(boardId);
+    			//console.log(tagName);
+    			// console.log(tagTypeString);
+    			
+    			// validation
+    			if(!tagName) {
+    				alert('태그 이름을 입력하세요!');
+    				return;
+    			}
+    			
+    			let formData = new FormData();
+    			formData.append('boardId', boardId);
+    			formData.append('tagName', tagName);
+    			formData.append('tagTypeString', tagTypeString);
+    			
+    			// ajax
+    			$.ajax({
+    				// request
+    				type:"POST"
+    				, url:"/admin/board/create-tag"
+    				, data:formData
+    				, processData:false
+    				, contentType:false
+    				, enctype:"multipart/form-data"
+    				// response
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						location.href = location.href;
+    					} else {
+    						// 중복된 이름의 태그가 있을 때
+    						alert(data.error_message);
+    					}
+    				}
+    				, error:function(e) {
+    					alert('태그를 등록하는데 실패했습니다.');
+    				}
+    			});
+    		});
+    		
+    		// admin 등록 전 아이디 체크
+    		$('#idCheckBtn').on('click', function() {
+    			$('#idCheckLength').addClass('d-none');
+    			$('#idCheckNone').addClass('d-none');
+    			$('#idCheckDuplicated').addClass('d-none');
+    			$('#idCheckOk').addClass('d-none');
+    			
+    			let adminLoginId = $('#adminLoginId').val().trim();
+    			let boardId = $(this).data('board-id');
+    			// alert(adminLoginId);
+    			
+    			// validation
+				if(adminLoginId.length < 4) {
+					$('#idCheckLength').removeClass('d-none');
+					return;
+				}
+    			
+				// AJAX
+				$.ajax({
+					// request
+					url:'/admin/user/search-by-loginid'
+					, data:{
+						"adminLoginId":adminLoginId
+						, "boardId":boardId
+						}
+					// response
+					, success:function(data) {
+						if(data.code == 200) {
+							if (data.is_existed_loginId == true && data.is_duplicated_loginId == false) {
+								// 사용 가능
+								$('#idCheckOk').removeClass('d-none');
+							} else if (data.is_existed_loginId == false){
+								// 조회 X
+								$('#idCheckNone').removeClass('d-none');
+							} else if (data.is_existed_loginId == true && data.is_duplicated_loginId == true) {
+								// 이미 존재하는 admin
+								$('#idCheckDuplicated').removeClass('d-none');
+							} else {
+								// 그 외의 오류
+								alert('어드민 아이디 확인 중 문제가 발생했습니다.');
+							}
+						}
+					}
+					, error:function(e) {
+						alert('어드민 아이디 확인에 실패했습니다.');
+					}
+				});
+    		});
+    		
+    		// 어드민 등록
+    		$('#addAdminBtn').on('click', function() {
+    			let boardId = $(this).data('board-id');
+    			let adminLoginId = $('#adminLoginId').val().trim();
+    			
+    			// validation
+    			if($('#idCheckOk').hasClass('d-none')) {
+    				alert('아이디 조회를 진행해야 합니다.');
+    				return;
+    			}
+    			
+    			// AJAX
+    			$.ajax({
+    				type:'POST'
+    				, url:'/admin/board/create-subadmin'
+    				, data:{
+    					"adminLoginId":adminLoginId
+						, "boardId":boardId
+    				}
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						location.href = location.href;
+    					} else {
+							alert(data.error_message);
+						}
+    				}
+    				, error:function(e) {
+    					alert('admin 등록 중 문제가 발생했습니다.');
+    				}
+    			});
+    		});
+    		
+    		// 어드민 삭제
+    		$('.adminDelete').on('click', function(e) {
+    			e.preventDefault();
+    			let boardId = $(this).data('board-id');
+    			let userId = $(this).data('user-id');
+    			// console.log(boardId);
+    			// console.log(userIdId);
+    			
+    			$.ajax({
+    				type:'DELETE'
+    				, url:'/admin/board/delete-subadmin'
+    				, data:{
+    					'boardId':boardId
+    					, 'userId':userId
+    				}
+    				, success:function(data) {
+						if(data.code == 200) {
+							location.href = location.href;
+						} else {
+							alert(data.error_message);
+						}
+					}
+					, error:function(e) {
+						alert('admin 삭제 중 문제가 발생했습니다.');
+					}
+    			});
+    		});
+    		
+    		// 게시판 삭제
+    		$('#boardDeleteBtn').on('click', function() {
+    			alert('게시판을 삭제하면 되돌릴 수 없습니다.\n정말로 삭제하시겠습니까?');
+    		});
+    	});
+    </script>
+</th:block>
