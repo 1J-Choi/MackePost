@@ -33,7 +33,35 @@ public class PostBO {
 		}
 		post.setSubject(subject);
 		post.setContent(content);
+		post.setUserId(userId);
 		postMapper.insertNormalPost(post);
+		
+		List<String> imagePathList = new ArrayList<>();
+		if(files != null) {
+			imagePathList = fileManager.uploadFile(files, userLoginId + "_post");
+			for (String imagePath : imagePathList) {
+				imageBO.addImage(post.getId(), imagePath);
+			}
+		}
+		
+		return post;
+	}
+	
+	public Post addMarketPost(
+			int boardId, int tagId, String subject, 
+			String itemName, Integer price, String content, 
+			List<MultipartFile> files, int userId, String userLoginId) {
+		Post post = new Post();
+		post.setBoardId(boardId);
+		if(tagId != 0) {
+			post.setTagId(tagId);
+		}
+		post.setSubject(subject);
+		post.setContent(content);
+		post.setUserId(userId);
+		postMapper.insertNormalPost(post);
+		// 거래글 marketPost 저장하기
+		postMapper.insertMarketPost(post.getId(), itemName, price, false);
 		
 		List<String> imagePathList = new ArrayList<>();
 		if(files != null) {

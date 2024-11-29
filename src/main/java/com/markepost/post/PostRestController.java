@@ -23,6 +23,16 @@ import lombok.RequiredArgsConstructor;
 public class PostRestController {
 	private final PostBO postBO;
 	
+	/**
+	 * 일반글 업로드
+	 * @param boardId
+	 * @param tagId
+	 * @param subject
+	 * @param content
+	 * @param files
+	 * @param session
+	 * @return
+	 */
 	@PostMapping("/create-normal")
 	public Map<String, Object> createNormalPost(
 			@RequestParam("boardId") int boardId, 
@@ -53,5 +63,38 @@ public class PostRestController {
 		return result;
 	}
 	
-	
+	@PostMapping("/create-market")
+	public Map<String, Object> createMarketPost(
+			@RequestParam("boardId") int boardId, 
+			@RequestParam("tagId") int tagId, 
+			@RequestParam("subject") String subject,
+			@RequestParam("itemName") String itemName,
+			@RequestParam(value = "price", required = false) Integer price,
+			@RequestParam("content") String content,
+			@RequestParam(value = "files", required = false) List<MultipartFile> files,
+			HttpSession session) {
+		// session 에서 userId, userLoginId 추출
+		int userId = (int) session.getAttribute("userId");
+		String userLoginId = (String) session.getAttribute("userLoginId");
+		
+		Map<String, Object> result = new HashMap<>();
+		// 게시판 정지 유저일 경우 return
+		
+		// db insert
+		Post post = postBO.addMarketPost(
+				boardId, tagId, subject, 
+				itemName, price, content, 
+				files, userId, userLoginId);
+		
+		// return
+		if(post != null) {
+			result.put("code", 200);
+			result.put("result", "성공");
+		} else {
+			result.put("code", 403);
+			result.put("error_message", "일반 게시글을 등록하는데 실패했습니다.");
+		}
+				
+		return result;
+	}
 }

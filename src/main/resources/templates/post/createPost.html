@@ -37,7 +37,7 @@
 					</div>
 					
 					<!-- 이미지 추가하기 -->
-					<button type="button" class="btn btn-warning">이미지 추가</button>
+					<button type="button" class="btn btn-warning" id="imagePlusBtn">이미지 추가</button>
 				</div>
 				<!-- 거래글 부분 -->
 				<div id="market" class="d-none">
@@ -202,7 +202,7 @@
     				// AJAX
     				$.ajax({
     					type:'POST'
-    					, url: '/post/create-normal'
+    					, url: '/post/create-market'
     					, data:formData
     	    			, processData:false
     	    			, contentType:false

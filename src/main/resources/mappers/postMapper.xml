@@ -32,4 +32,25 @@
 			, NOW()
 		)
 	</insert>
+	<insert id="insertMarketPost" 
+	parameterType="map">
+		INSERT INTO `marketPost`
+		(
+			`postId`
+			, `itemName`
+			, `price`
+			, `isDone`
+			, `createdAt`
+			, `updatedAt`
+		)
+		VALUES
+		(
+			#{postId}
+			, #{itemName}
+			, #{price}
+			, #{isDone}
+			, NOW()
+			, NOW()
+		)
+	</insert>
 </mapper>
