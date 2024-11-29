@@ -67,6 +67,8 @@ public class BoardController {
 			Model model, HttpSession session) {
 		Integer userId = (Integer) session.getAttribute("userId");
 		
+		// TODO: suspend에 따른 접근 차단 기능
+		
 		BoardDetailDTO boardDetailDTO = boardBO.getBoardDetailDTOByBoardId(boardId, userId);
 		
 		model.addAttribute("boardDetailDTO", boardDetailDTO);

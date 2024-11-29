@@ -6,9 +6,11 @@
 <section layout:fragment="content" class="contents d-flex justify-content-center">
 	<div class="h-90 col-10 my-2">
 		<div class="bg-light shadow rounded my-5 p-3">
+			<!-- 상단부 -->
+			<div>
 			<!-- 프로필 사진, 이름, 자기소개, 설정메뉴 -->
-			<div class="d-flex  align-items-center justify-content-between">
-			 	<div class="d-flex">
+				<div class="d-flex  align-items-center justify-content-between">
+				 <div class="d-flex">
 					<div class="d-flex align-items-center">
 						<!-- 프로필 사진 -->
 						<!-- 사진 있을 때 -->
@@ -20,17 +22,41 @@
 					</div>
 					<!-- 이름 -->
 					<h1><span th:text="${boardDetailDTO.board.name}"></span> 게시판</h1>
-					
+						
 					<!-- 게시판 소개 -->
 					<div class="d-flex align-items-lg-end">
 						<h5 th:text="${boardDetailDTO.board.introduce}" class="text-secondary ml-1"></h5>
 					</div>
-			 	</div>
+				</div>
 				<!-- 설정 버튼 -->
 				<div th:if="${boardDetailDTO.isAdmin}">
 					<a th:href="|/admin/board/board-setting-view?boardId=${boardDetailDTO.board.id}|">
 						<img src="https://www.iconninja.com/files/860/824/939/more-icon.png" alt="게시판 정보수정 버튼" height="30">
 					</a>
+				</div>
+			</div>
+				<!-- 태그 메뉴바 -->
+				<div>
+				</div>
+					
+				<!-- 글 목록 -->
+				<div>
+				</div>
+					
+				<!-- 페이지 기능 & 글 등록 버튼 -->
+				<div class="d-flex justify-content-between">
+					<!-- 칸 채우기용 -->
+					<div></div>
+					<!-- 페이지 기능 -->
+					<div></div>
+					<!-- 글 등록 -->
+					<div>
+						<a th:href="|/post/create-post-view?boardId=${boardDetailDTO.board.id}|" class="btn btn-primary shadow-sm">글 등록</a>
+					</div>
+				</div>
+					
+				<!-- 검색창 -->
+				<div>
 				</div>
 			</div>
 		</div>

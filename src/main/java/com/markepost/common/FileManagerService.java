@@ -6,6 +6,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -76,5 +78,40 @@ public class FileManagerService {
 					}
 				}
 			}
+		}
+		
+		/**
+		 * 게시판의 여러 이미지 등록
+		 * @param files
+		 * @param name
+		 * @return
+		 */
+		// 다중 삭제의 경우 하나의 path 값만 받아와도 됨
+		public List<String> uploadFile(List<MultipartFile> files, String name) {
+			String directoryName = name + "_" + System.currentTimeMillis(); // aaaa_17237482334
+			String filePath = FILE_UPLOAD_PATH + directoryName + "/";
+			
+			File directory = new File(filePath);
+			if (directory.mkdir() == false) {
+				return null; 
+			}
+			
+			List<String> imagePathList = new ArrayList<>();
+			
+			for(MultipartFile file : files) {
+				
+				try {
+					byte[] bytes = file.getBytes();
+					
+					Path path = Paths.get(filePath + file.getOriginalFilename());
+					Files.write(path, bytes);
+					imagePathList.add("/images/" + directoryName + "/" + file.getOriginalFilename());
+				} catch (IOException e) {
+					e.printStackTrace();
+					return null; 
+				}
+			}
+			
+			return imagePathList;
 		}
 }

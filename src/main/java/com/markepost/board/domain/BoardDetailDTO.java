@@ -25,4 +25,5 @@ public class BoardDetailDTO {
 	private List<TagEntity> tags;
 	
 	// List<postDTO> 좀 나중에~
+	// 얘는 아예 빼서 만들어야 html 갈아끼우기 가능!
 }

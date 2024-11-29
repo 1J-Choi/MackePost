@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.markepost.admin.bo.AdminBO;
 import com.markepost.admin.entity.AdminDto;
-import com.markepost.admin.entity.AdminEntity;
 import com.markepost.board.domain.Board;
 import com.markepost.board.domain.BoardDetailDTO;
 import com.markepost.board.domain.SearchBoardDTO;
@@ -33,6 +32,10 @@ public class BoardBO {
 	
 	public Board getBoardByName(String name) {
 		return boardMapper.selectBoardByName(name);
+	}
+	
+	public Board getBoardById(int boardId) {
+		return boardMapper.selectBoardById(boardId);
 	}
 	
 	public Board addBoard(String name, String introduce, 

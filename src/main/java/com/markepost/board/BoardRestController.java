@@ -48,6 +48,14 @@ public class BoardRestController {
 		return result;
 	}
 	
+	/**
+	 * 게시판 생성
+	 * @param name
+	 * @param introduce
+	 * @param file
+	 * @param session
+	 * @return
+	 */
 	@PostMapping("/create")
 	public Map<String, Object> createBoard(
 			@RequestParam("name") String name,

@@ -1,11 +1,13 @@
 package com.markepost.tag.bo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.markepost.tag.constant.TagType;
 import com.markepost.tag.constant.TradeType;
+import com.markepost.tag.domain.PostTagDTO;
 import com.markepost.tag.entity.TagEntity;
 import com.markepost.tag.repository.TagRepository;
 
@@ -43,5 +45,24 @@ public class TagBO {
 		}
 		
 		return tagRepository.save(newTag);
+	}
+	
+	public List<PostTagDTO> getpostTagDTOListByBoardId(int boardId) {
+		List<TagEntity> tagList = tagRepository.findByBoardId(boardId);
+		List<PostTagDTO> postTagDTOList = new ArrayList<>();
+		
+		for (TagEntity tag : tagList) {
+			String tagTradeType = "";
+			if(tag.getTagType() == TagType.NORMAL) {
+				tagTradeType = tag.getTagType().toString();
+			} else {
+				tagTradeType = tag.getTagType().toString() + "/" + tag.getTradeType().toString();
+			}
+			
+			PostTagDTO postTagDTO = new PostTagDTO(tag.getId(), tag.getTagName(), tagTradeType);
+			postTagDTOList.add(postTagDTO);
+		}
+		
+		return postTagDTOList;
 	}
 }
