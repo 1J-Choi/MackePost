@@ -1,5 +1,6 @@
 package com.markepost.board;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.markepost.board.bo.BoardBO;
 import com.markepost.board.domain.BoardDetailDTO;
 import com.markepost.board.domain.SearchBoardDTO;
+import com.markepost.page.generic.Page;
+import com.markepost.post.bo.PostBO;
+import com.markepost.post.domain.PostSearchDTO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BoardController {
 	private final BoardBO boardBO;
+	private final PostBO postBO;
 	
 	@GetMapping("/create-board-view")
 	public String createBoard(HttpSession session) {
@@ -64,14 +69,20 @@ public class BoardController {
 	@GetMapping("/post-list-view")
 	public String boardDetail(
 			@RequestParam("boardId") int boardId,
+			@RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "tagId", required = false) Integer tagId,
 			Model model, HttpSession session) {
 		Integer userId = (Integer) session.getAttribute("userId");
 		
 		// TODO: suspend에 따른 접근 차단 기능
 		
 		BoardDetailDTO boardDetailDTO = boardBO.getBoardDetailDTOByBoardId(boardId, userId);
+		Page<PostSearchDTO> posts = postBO.getSearchPost(boardId, tagId, page, null, null);
 		
 		model.addAttribute("boardDetailDTO", boardDetailDTO);
+		model.addAttribute("posts", posts);
+		model.addAttribute("searchString", "");
+		model.addAttribute("nowDate", LocalDateTime.now());
 		
 		return "board/boardDetail";
 	}

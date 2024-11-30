@@ -22,6 +22,13 @@ public class TagBO {
 		return tagRepository.findByBoardId(boardId);
 	}
 	
+	public TagEntity getTagById(Integer tagId) {
+		if(tagId == null) {
+			return null;
+		}
+		return tagRepository.findById(tagId).orElse(null);
+	}
+	
 	public TagEntity addTag(int boardId, String tagName, 
 			String tagTypeString) {
 		TagEntity tag = tagRepository.findByBoardIdAndTagName(boardId, tagName);

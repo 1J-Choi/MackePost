@@ -36,22 +36,90 @@
 				</div>
 			</div>
 				<!-- 태그 메뉴바 -->
-				<div>
+				<div class="d-flex flex-wrap mt-2">
+					<th:block th:each="tag : ${boardDetailDTO.tags}">
+						<!-- 일반 태그 => 회색 -->
+						<a th:if="${tag.tagType.name() == 'NORMAL'}" th:data-tag-id="${tag.id}"
+						class="rounded bg-secondary p-1 mr-1 mb-1 shadow-sm text-white drag-prevent tagBtn" th:text="${tag.tagName}"></a>
+						<!-- 인게임 태그 => 노랑 -->
+						<a th:if="${tag.tagType.name() == 'INGAME'}"  th:data-tag-id="${tag.id}"
+						class="rounded bg-warning p-1 mr-1 mb-1 shadow-sm text-dark drag-prevent tagBtn" th:text="${tag.tagName}"></a>
+						<!-- 실물 태그 => 오렌지 -->
+						<div th:if="${tag.tagType.name() == 'REAL'}"  th:data-tag-id="${tag.id}"
+						class="rounded bg-orange bg-orange-hover p-1 mr-1 mb-1 shadow-sm text-dark drag-prevent tagBtn" th:text="${tag.tagName}"></div>
+					</th:block>		
 				</div>
 					
-				<!-- 글 목록 -->
-				<div>
-				</div>
-					
-				<!-- 페이지 기능 & 글 등록 버튼 -->
-				<div class="d-flex justify-content-between">
-					<!-- 칸 채우기용 -->
-					<div></div>
-					<!-- 페이지 기능 -->
-					<div></div>
-					<!-- 글 등록 -->
+				<!-- 교체할 태그 묶음 -->
+				<div id="target-container">
+					<!-- 글 목록 -->
 					<div>
-						<a th:href="|/post/create-post-view?boardId=${boardDetailDTO.board.id}|" class="btn btn-primary shadow-sm">글 등록</a>
+						<table class="table">
+							<thead>
+								<tr>
+									<th>No.</th>
+									<th><!-- 태그 --></th>
+									<th>제목<!-- & 좋아요 --></th>
+									<th>글쓴이</th>
+									<th>작성일</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="post, status : ${posts.getItems()}">
+									<!-- 게시글 번호 -->
+									<td th:text="${post.postId}"></td>
+									<!-- 게시글 태그 -->
+									<td class="d-flex justify-contetn-center">
+										<th:block th:if="${post.tag} != null">
+											<!-- 일반 태그 => 회색 -->
+											<div th:if="${post.tag.tagType.name() == 'NORMAL'}" 
+											class="rounded bg-secondary p-1 shadow-sm text-white" th:text="${post.tag.tagName}"></div>
+											<!-- 인게임 태그 => 노랑 -->
+											<div th:if="${post.tag.tagType.name() == 'INGAME'}" 
+											class="rounded bg-warning p-1 shadow-sm" th:text="${post.tag.tagName}"></div>
+											<!-- 실물 태그 => 오렌지 -->
+											<div th:if="${post.tag.tagType.name() == 'REAL'}" 
+											class="rounded bg-orange p-1 shadow-sm" th:text="${post.tag.tagName}"></div>
+										</th:block>
+									</td>
+									<!-- 게시글 제목 & 좋아요 -->
+									<td class="d-flex">
+										<a th:href="|/post/post-detail-view?postId=${post.postId}|" 
+										class="text-dark">
+											<span th:text="${post.subject}"></span> ♥<span th:text="${post.likeCount}"></span>
+										</a> 
+										
+									</td>
+									<!-- 게시글 작성자 -->
+									<td>
+										<a th:text="${post.writerName}" th:href="|/user/userpage-view?userId=${post.writerId}|" class="text-dark"></a>
+									</td>
+									<!-- 작성일 -->
+									<td>
+										<!-- 오늘인 경우 -->
+										<th:block th:if="${#temporals.format(post.createdAt, 'yyyy-MM-dd') == #temporals.format(nowDate, 'yyyy-MM-dd')}">
+											<span th:text="${#temporals.format(post.createdAt, 'HH:mm')}"></span>
+										</th:block>
+										<!-- 날짜가 지난 경우 -->
+										<th:block th:unless="${#temporals.format(post.createdAt, 'yyyy-MM-dd') == #temporals.format(nowDate, 'yyyy-MM-dd')}">
+											<span th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+										</th:block>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+						
+					<!-- 페이지 기능 & 글 등록 버튼 -->
+					<div class="d-flex justify-content-between">
+						<!-- 칸 채우기용 -->
+						<div></div>
+						<!-- 페이지 기능 -->
+						<div></div>
+						<!-- 글 등록 -->
+						<div>
+							<a th:href="|/post/create-post-view?boardId=${boardDetailDTO.board.id}|" class="btn btn-primary shadow-sm">글 등록</a>
+						</div>
 					</div>
 				</div>
 					

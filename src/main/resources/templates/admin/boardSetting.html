@@ -71,7 +71,7 @@
 				<th:block th:each="tag : ${boardDetailDTO.tags}">
 					<!-- 일반 태그 => 회색 -->
 					<div th:if="${tag.tagType.name() == 'NORMAL'}" 
-					class="rounded bg-secondary p-1 mr-1 mb-1 shadow-sm" th:text="${tag.tagName}"></div>
+					class="rounded bg-secondary p-1 mr-1 mb-1 shadow-sm text-white" th:text="${tag.tagName}"></div>
 					<!-- 인게임 태그 => 노랑 -->
 					<div th:if="${tag.tagType.name() == 'INGAME'}" 
 					class="rounded bg-warning p-1 mr-1 mb-1 shadow-sm" th:text="${tag.tagName}"></div>

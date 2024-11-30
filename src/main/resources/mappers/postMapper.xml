@@ -53,4 +53,58 @@
 			, NOW()
 		)
 	</insert>
+	<select id="count" 
+	parameterType="map" 
+	resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			`post`
+		WHERE
+			`boardId` = #{boardId}
+			<if test="tagId != null">
+			AND `tagId` = #{tagId}
+			</if>
+			<if test="contentText != null">
+			AND `content` LIKE '%${contentText}%'
+			</if>
+			<if test="userIdList != null and userIdList.size > 0">
+			AND `userId` IN
+			<foreach collection="userIdList" item="userId"  open="(" separator="," close=")">
+				#{userId}
+			</foreach>
+			</if>
+	</select>
+	<select id="selectPostSearchDTO" 
+	parameterType="map" 
+	resultType="com.markepost.post.domain.Post">
+		SELECT
+			`id`
+			, `boardId`
+			, `userId`
+			, `tagId`
+			, `subject`
+			, `content`
+			, `createdAt`
+			, `updatedAt`
+		FROM
+			`post`
+		WHERE
+			`boardId` = #{boardId}
+			<if test="tagId != null">
+			AND `tagId` = #{tagId}
+			</if>
+			<if test="contentText != null">
+			AND `content` LIKE '%${contentText}%'
+			</if>
+			<if test="userIdList != null and userIdList.size > 0">
+			AND `userId` IN
+			<foreach collection="userIdList" item="userId"  open="(" separator="," close=")">
+				#{userId}
+			</foreach>
+			</if>
+			ORDER BY `id` DESC
+			LIMIT #{pageSize}
+			OFFSET #{offset}
+	</select>
 </mapper>

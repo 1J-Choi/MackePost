@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.markepost.user.bo.UserBO;
 import com.markepost.user.entity.UserEntity;
@@ -47,6 +48,14 @@ public class UserController {
 		if(user == null) {
 			return "/user/sign-in-view";
 		}
+		
+		model.addAttribute("user", user);
+		return "/user/userPage";
+	}
+	
+	@GetMapping("/userpage-view")
+	public String userPage(@RequestParam("userId") int userId, Model model) {
+		UserEntity user = userBO.getUserEntityById(userId);
 		
 		model.addAttribute("user", user);
 		return "/user/userPage";

@@ -1,5 +1,7 @@
 package com.markepost.post.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,4 +15,16 @@ public interface PostMapper {
 			@Param("itemName") String itemName, 
 			@Param("price") Integer price, 
 			@Param("isDone") boolean isDone);
+	public int count(
+			@Param("boardId") int boardId, 
+			@Param("tagId") Integer tagId,
+			@Param("contentText") String contentText,
+			@Param("userIdList") List<Integer> userIdList);
+	public List<Post> selectPostSearchDTO(
+			@Param("boardId") int boardId, 
+			@Param("tagId") Integer tagId, 
+			@Param("contentText") String contentText,
+			@Param("userIdList") List<Integer> userIdList, 
+			@Param("pageSize") int pageSize, 
+			@Param("offset") int offset);
 }
