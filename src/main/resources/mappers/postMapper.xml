@@ -65,8 +65,8 @@
 			<if test="tagId != null">
 			AND `tagId` = #{tagId}
 			</if>
-			<if test="contentText != null">
-			AND `content` LIKE '%${contentText}%'
+			<if test="subjectText != null">
+			AND `subject` LIKE '%${subjectText}%'
 			</if>
 			<if test="userIdList != null and userIdList.size > 0">
 			AND `userId` IN
@@ -94,8 +94,8 @@
 			<if test="tagId != null">
 			AND `tagId` = #{tagId}
 			</if>
-			<if test="contentText != null">
-			AND `content` LIKE '%${contentText}%'
+			<if test="subjectText != null">
+			AND `subject` LIKE '%${subjectText}%'
 			</if>
 			<if test="userIdList != null and userIdList.size > 0">
 			AND `userId` IN

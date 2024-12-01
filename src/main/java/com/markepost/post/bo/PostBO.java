@@ -87,14 +87,14 @@ public class PostBO {
 	
 	public Page<PostSearchDTO> getSearchPost(
 			int boardId, Integer tagId, int page,
-			String contentText, List<Integer> userIdList) {
+			String subjectText, List<Integer> userIdList) {
 		Page<PostSearchDTO> posts = new Page<>();
 		posts.setNowPage(page);
 		posts.setPageSize(10);
-		posts.setTotalCount(postMapper.count(boardId, tagId, contentText, userIdList));
+		posts.setTotalCount(postMapper.count(boardId, tagId, subjectText, userIdList));
 		
 		List<Post> postList = postMapper.selectPostSearchDTO
-				(boardId, tagId, contentText, userIdList, posts.getPageSize(), posts.getOffset());
+				(boardId, tagId, subjectText, userIdList, posts.getPageSize(), posts.getOffset());
 		for(Post post : postList) {
 			PostSearchDTO postSearchDTO = new PostSearchDTO();
 			postSearchDTO.setPostId(post.getId());
@@ -106,9 +106,10 @@ public class PostBO {
 			postSearchDTO.setConfirmedUser(user.isConfirmed());
 			AdminEntity userAdmin = adminBO.getAdminEntityById(boardId, user.getId());
 			if(userAdmin == null) { // 어드민이 아닐 시
-				postSearchDTO.setConfirmedUser(false);
+				postSearchDTO.setAdmin(false);
 				postSearchDTO.setMain(false);
 			} else { // 어드민일 시
+				postSearchDTO.setAdmin(true);
 				// adminType이 true => 메인 어드민이다 => true
 				// adminType이 false => 서브 어드민이다 => false
 				// boolean값이 똑같이 들어감으로 adminType을 그대로 넣어준다

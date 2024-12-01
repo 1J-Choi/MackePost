@@ -18,12 +18,12 @@ public interface PostMapper {
 	public int count(
 			@Param("boardId") int boardId, 
 			@Param("tagId") Integer tagId,
-			@Param("contentText") String contentText,
+			@Param("subjectText") String contentText,
 			@Param("userIdList") List<Integer> userIdList);
 	public List<Post> selectPostSearchDTO(
 			@Param("boardId") int boardId, 
 			@Param("tagId") Integer tagId, 
-			@Param("contentText") String contentText,
+			@Param("subjectText") String subjectText,
 			@Param("userIdList") List<Integer> userIdList, 
 			@Param("pageSize") int pageSize, 
 			@Param("offset") int offset);

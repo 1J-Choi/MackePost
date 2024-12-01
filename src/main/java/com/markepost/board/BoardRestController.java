@@ -1,5 +1,6 @@
 package com.markepost.board;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.markepost.board.bo.BoardBO;
 import com.markepost.board.domain.Board;
 import com.markepost.board.domain.SearchBoardDTO;
+import com.markepost.page.generic.Page;
+import com.markepost.post.bo.PostBO;
+import com.markepost.post.domain.PostSearchDTO;
+import com.markepost.user.bo.UserBO;
+import com.markepost.user.entity.UserEntity;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +30,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BoardRestController {
 	private final BoardBO boardBO;
+	private final UserBO userBO;
+	private final PostBO postBO;
 	
 	/**
 	 * 게시판 이름 중복 확인

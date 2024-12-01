@@ -1,5 +1,7 @@
 package com.markepost.user.bo;
 
+import java.util.List;
+
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,5 +77,9 @@ public class UserBO {
 		
 		userRepository.save(user);
 		return user;
+	}
+	
+	public List<UserEntity> getUserListByLikeName(String name) {
+		return userRepository.findByNameLike("%" + name + "%");
 	}
 }
