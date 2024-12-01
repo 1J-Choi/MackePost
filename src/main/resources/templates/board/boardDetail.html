@@ -69,18 +69,20 @@
 								<!-- 게시글 번호 -->
 								<td th:text="${post.postId}"></td>
 								<!-- 게시글 태그 -->
-								<td class="d-flex justify-contetn-center">
-									<th:block th:if="${post.tag} != null">
-										<!-- 일반 태그 => 회색 -->
-										<div th:if="${post.tag.tagType.name() == 'NORMAL'}" 
-										class="rounded bg-secondary p-1 shadow-sm text-white" th:text="${post.tag.tagName}"></div>
-										<!-- 인게임 태그 => 노랑 -->
-										<div th:if="${post.tag.tagType.name() == 'INGAME'}" 
-										class="rounded bg-warning p-1 shadow-sm" th:text="${post.tag.tagName}"></div>
-										<!-- 실물 태그 => 오렌지 -->
-										<div th:if="${post.tag.tagType.name() == 'REAL'}" 
-										class="rounded bg-orange p-1 shadow-sm" th:text="${post.tag.tagName}"></div>
-									</th:block>
+								<td>
+									<div class="d-flex justify-contetn-center">
+										<th:block th:if="${post.tag} != null">
+											<!-- 일반 태그 => 회색 -->
+											<div th:if="${post.tag.tagType.name() == 'NORMAL'}" 
+											class="rounded bg-secondary p-1 shadow-sm text-white" th:text="${post.tag.tagName}"></div>
+											<!-- 인게임 태그 => 노랑 -->
+											<div th:if="${post.tag.tagType.name() == 'INGAME'}" 
+											class="rounded bg-warning p-1 shadow-sm" th:text="${post.tag.tagName}"></div>
+											<!-- 실물 태그 => 오렌지 -->
+											<div th:if="${post.tag.tagType.name() == 'REAL'}" 
+											class="rounded bg-orange p-1 shadow-sm" th:text="${post.tag.tagName}"></div>
+										</th:block>
+									</div>
 								</td>
 								<!-- 게시글 제목 & 좋아요 -->
 								<td>

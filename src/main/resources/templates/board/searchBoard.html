@@ -23,13 +23,15 @@
 							<a th:href="|/board/post-list-view?boardId=${board.board.id}|"><span th:text="${board.board.name}"></span> 게시판</a>
 						</td>
 						<td th:text="${board.board.introduce}" class="text-sm text-secondary"></td>
-						<td class="d-flex">
-							<th:block th:if="${board.hasIngameTag}">
-								<div class="bg-warning rounded shadow-sm p-1 mr-1">인게임거래</div>
-							</th:block>
-							<th:block th:if="${board.hasRealTag}">
-								<div class="bg-orange rounded shadow-sm p-1">실물거래</div>
-							</th:block>
+						<td>
+							<div class="d-flex">
+								<th:block th:if="${board.hasIngameTag}">
+									<div class="bg-warning rounded shadow-sm p-1 mr-1">인게임거래</div>
+								</th:block>
+								<th:block th:if="${board.hasRealTag}">
+									<div class="bg-orange rounded shadow-sm p-1">실물거래</div>
+								</th:block>
+							</div>
 						</td>
 					</tr>
 				</tbody>
