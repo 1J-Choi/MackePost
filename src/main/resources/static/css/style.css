@@ -36,3 +36,6 @@ a, a:hover {
 table {
 	white-space:nowrap; 
 }
+.text-line-through {
+	text-decoration: line-through;
+}

@@ -107,4 +107,50 @@
 			LIMIT #{pageSize}
 			OFFSET #{offset}
 	</select>
+	<select id="selectPostById" 
+	parameterType="int" 
+	resultType="com.markepost.post.domain.Post">
+		SELECT
+			`id`
+			, `boardId`
+			, `userId`
+			, `tagId`
+			, `subject`
+			, `content`
+			, `createdAt`
+			, `updatedAt`
+		FROM
+			`post`
+		WHERE
+			`id` = #{postId}
+	</select>
+	<select id="getMarketPostById" 
+	parameterType="int" 
+	resultType="com.markepost.post.domain.MarketPost">
+		SELECT
+			`postId`
+			, `itemName`
+			, `price`
+			, `isDone`
+			, `createdAt`
+			, `updatedAt`
+		FROM
+			`marketPost`
+		WHERE
+			`postId` = #{postId}
+	</select>
+	<update id="updateMarketPostIsDone" 
+	parameterType="map">
+		UPDATE
+			`marketPost` AS `m`
+		JOIN
+			`post` AS `p`
+			ON
+				`m`.`postId` = `p`.`id`
+		SET
+			`m`.`isDone` = true
+		WHERE
+			`m`.`postId` = #{postId}
+			AND `p`.`userId` = #{userId}
+	</update>
 </mapper>

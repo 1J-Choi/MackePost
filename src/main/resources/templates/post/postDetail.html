@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/defaultLayout}">
+<section layout:fragment="content" class="contents d-flex justify-content-center">
+	<div class="h-90 col-10 my-2">
+		<div class="bg-light shadow rounded my-5 p-3">
+			<!-- 상단부 (태그 제목) -->
+			<div class="d-flex justify-content-start align-items-center">
+				<!-- 태그 -->
+				<th:block th:if="${postDetail.tag} != null">
+					<!-- 일반 태그 => 회색 -->
+					<div th:if="${postDetail.tag.tagType.name() == 'NORMAL'}"
+					class="rounded bg-secondary p-1 mr-2 mb-1 shadow-sm text-white drag-prevent" th:text="${postDetail.tag.tagName}"></div>
+					<!-- 인게임 태그 => 노랑 -->
+					<div th:if="${postDetail.tag.tagType.name() == 'INGAME'}"
+					class="rounded bg-warning p-1 mr-2 mb-1 shadow-sm text-dark drag-prevent" th:text="${postDetail.tag.tagName}"></div>
+					<!-- 실물 태그 => 오렌지 -->
+					<div th:if="${postDetail.tag.tagType.name() == 'REAL'}"
+					class="rounded bg-orange p-1 mr-2 mb-1 shadow-sm text-dark drag-prevent" th:text="${postDetail.tag.tagName}"></div>
+				</th:block>
+				<!-- 제목 -->
+				<h1><span th:text="${postDetail.post.subject}"></span></h1>
+				<span th:if="${postDetail.post.createdAt != postDetail.post.updatedAt}" 
+				class="text-secondary">
+				(수정됨)
+				</span>
+			</div>
+			<hr>
+			<!-- 작성자 & 작성일 -->
+			<div class="d-flex justify-content-between align-items-center font-weight-bold">
+				<!-- 작성자 -->
+				<div class="d-flex">작성자: 
+					<a th:href="|/user/userpage-view?userId=${postDetail.user.id}|" 
+					class="ml-1">
+						<span th:text="${postDetail.user.name}" class="text-dark"></span>
+						<!-- 인증된 유저 -->
+						<img th:if="${postDetail.isConfirmedUser}"  src="/img/confirmed.png" height="18" width="18">
+						<!-- main Admin -->
+						<img th:if="${postDetail.isAdmin && postDetail.isMain}" src="/img/admin.png" height="18" width="18">
+						<!-- sub Admin -->
+						<img th:if="${postDetail.isAdmin && !postDetail.isMain}" src="/img/subAdmin.png" height="18" width="18">
+					</a>
+				</div>
+				<!-- 작성일 -->
+				<div>
+					<div class="d-flex">
+						<span>작성일: </span>
+						<div th:text="${#temporals.format(postDetail.post.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- 이미지들 -->
+			<div class="d-flex flex-wrap">
+				<th:block th:each="image, status : ${postDetail.imageList}">
+					<a th:href="${image.imagePath}" target="_blank">
+						<img th:src="${image.imagePath}" th:alt="|${status.count}번 이미지|" 
+						class="mr-2 mt-3" height="300">
+					</a>
+				</th:block>
+			</div>
+			<hr>
+			
+			<!-- 본문 -->
+			<!-- 1. 일반글 -->
+			<div th:if="${postDetail.tag == null} or ${postDetail.tag.tagType.name() == 'NORMAL'}">
+				<div th:text="${postDetail.post.content}" class="p-3 rounded shadow-sm">
+				</div>
+			</div>
+			<!-- 2. 거래글 -->
+			<div th:if="${postDetail.tag != null} and ${postDetail.tag.tagType.name() == 'INGAME' or postDetail.tag.tagType.name() == 'REAL'}">
+				<!-- 상품명 -->
+				<div class="input-group">
+					<div class="input-group-prepand">
+						<span class="input-group-text">상품명</span>
+					</div>
+					<output class="form-control" th:text="${postDetail.marketPost.itemName}"></output>
+				</div>
+				<!-- 가격 -->
+				<div class="input-group mt-2">
+					<div class="input-group-prepand">
+						<span class="input-group-text">가격</span>
+					</div>
+					<!-- 가격 없을 시 -->
+					<th:block th:if="${postDetail.marketPost.price == null} or ${postDetail.marketPost.price == 0}">
+						<output class="form-control" >가격없음</output>
+					</th:block>
+					<!-- 가격 있을 시 -->
+					<th:block th:unless="${postDetail.marketPost.price == null} or ${postDetail.marketPost.price == 0}">
+						<output class="form-control" th:text="${postDetail.marketPost.price}"></output>
+					</th:block>
+				</div>
+				<!-- 설명 -->
+				<div class="input-group mt-2">
+					<div class="input-group-prepand">
+						<span class="input-group-text">설명</span>
+					</div>
+					<textarea class="form-control resize-none bg-white" rows="10" th:text="${postDetail.post.content}" readonly></textarea>
+				</div>
+			</div>
+			
+			<!-- 좋아요 -->
+			<div class="d-flex justify-content-end">
+				<a href="#" id="likeBtn" th:data-post-id="${postDetail.post.id}">
+					<img src="https://www.iconninja.com/files/214/518/441/heart-icon.png" width="18" height="18" alt="empty heart" th:unless="${postDetail.filledLike}" class="mr-1">
+					<img src="https://www.iconninja.com/files/527/809/128/heart-icon.png" width="18" height="18" alt="filled heart" th:if="${postDetail.filledLike}" class="mr-1">
+					<span th:text="|좋아요 ${postDetail.likeCount}개|" class="text-dark"></span>
+				</a>
+			</div>
+			<hr>
+			
+			<!-- 댓글(대댓글) 기능 -->
+			<div class="rounded shadow-sm">
+				<h3>댓글</h3>
+				<!-- 댓글 대댓글 노출 -->
+				<div th:each="comment : ${postDetail.commentList}">
+					<div class="d-flex">
+						<a th:href="|/user/userpage-view?userId=${comment.comment.userId}|">
+							<span th:text="${comment.userName}" class="text-dark font-weight-bold"></span>
+							<!-- 인증된 유저 -->
+							<img th:if="${comment.isComfirmed}"  src="/img/confirmed.png" height="18" width="18">
+							<!-- main Admin -->
+							<img th:if="${comment.isAdmin && comment.isMain}" src="/img/admin.png" height="18" width="18">
+							<!-- sub Admin -->
+							<img th:if="${comment.isAdmin && !comment.isMain}" src="/img/subAdmin.png" height="18" width="18">
+							<span class="text-dark font-weight-bold">: </span>
+						</a>
+					</div>
+				</div>
+				<!-- 댓글 입력창 -->
+				<div class="input-group">
+					<input type="text" id="comment" class="form-control">
+					<div class="input-group-append">
+						<button type="button" id="commentSubmitBtn" class="btn btn-success" th:data-post-id="${postDetail.post.id}">등록</button>
+					</div>
+				</div>
+			</div>
+			
+			<!-- 하단 메뉴 -->
+			<div class="d-flex justify-content-between mt-3">
+				<!-- 게시판으로 -->
+				<a th:href="|/board/post-list-view?boardId=${postDetail.post.boardId}|" 
+				class="btn btn-secondary shadow-sm">게시판으로</a>
+				<div class="d-flex">
+					<!-- 일반 유저일 시 => 신고하기 -->
+					<th:block th:if="${session.userId != null} and ${session.userId != postDetail.post.userId}">
+						<a th:href="|/report/create?reportType=post&fkId=${postDetail.post.id}|" 
+						class="btn btn-danger shadow-sm">신고하기</a>
+					</th:block>
+					<!-- 글쓴이일 시 => 수정, 삭제 -->
+					<th:block th:if="${session.userId != null} and ${session.userId == postDetail.post.userId}">
+						<!-- 거래글 일 시 => 거래 완료 -->
+						<th:block th:if="${postDetail.marketPost != null}">
+							<th:block th:unless="${postDetail.marketPost.isDone}">
+								<button type="button" id="doneMarketBtn" class="btn btn-success shadow-sm mr-1" th:data-post-id="${postDetail.post.id}">거래 완료</button>
+							</th:block>
+							<th:block th:if="${postDetail.marketPost.isDone}">
+								<div class="rounded bg-secondary shadow-sm text-white text-center p-2 mr-1">거래 완료</div>
+							</th:block>
+						</th:block>
+							<button type="button" id="updatePostBtn" class="btn btn-warning shadow-sm mr-1">수정하기</button>
+							<button type="button" id="deletePostBtn" class="btn btn-danger shadow-sm">삭제하기</button>
+					</th:block>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<th:block layout:fragment="script">
+    <script>
+    	$(document).ready(function() {
+    		// 좋아요 버튼
+    		$('#likeBtn').on('click', function(e) {
+    			e.preventDefault();
+    			let postId = $(this).data('post-id');
+    			
+    			$.ajax({
+    				type:'GET'
+    				, url: '/like/' + postId
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						location.href = location.href;
+    					} else if (data.code == 403) {
+    						alert(data.error_message);
+    						location.href = '/user/sign-in-view';
+    					} else {
+    						alert(data.error_message);
+    					}
+    				}
+    				, error:function(e) {
+    					alert('좋아요 토글 기능 중 오류가 발생했습니다.');
+    				}
+    			});
+    		});
+    		
+    		// 거래 완료 버튼
+    		$('#doneMarketBtn').on('click', function(e) {
+    			e.preventDefault();
+    			let postId = $(this).data('post-id');
+    			
+    			$.ajax({
+    				type:'PATCH'
+    				, url:'/post/market-end'
+    				, data:{
+    					'postId':postId
+    				}
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						location.href = location.href;
+    					} else {
+    						alert(data.error_message);
+    					}
+    				}
+    				, error:function(e) {
+    					alert('거래 완료 처리중 오류가 발생했습니다.');
+    				}
+    			});
+    		});
+    		
+    		// 댓글 등록
+    		$('#commentSubmitBtn').on('click', function(e) {
+    			e.preventDefault();
+    			let postId = $(this).data('post-id');
+    			// alert(postId);
+    			let content = $('#comment').val();
+    			// alert(content);
+    			
+    			// validation
+    			if (!content) {
+    				alert('댓글 내용이 비어있습니다.')
+    				return;
+    			}
+    			
+    			$.ajax({
+    				type:'POST'
+    				, url:'/comment/create'
+    				, data:{
+    					'postId':postId
+    					, 'content':content
+    				}
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						location.href = location.href;
+    					} else if(data.code == 403) {
+    						alert(error_message + '\n정지기간: ' + untilTime);
+    					} else {
+    						alert(error_message);
+    					}
+    				}
+    				, error:function(e) {
+    					alert('댓글 작성 중 오류가 발생했습니다.');
+    				}
+    			});
+    		})
+    	});
+    </script>
+</th:block>

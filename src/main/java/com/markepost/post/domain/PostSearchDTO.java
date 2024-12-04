@@ -14,6 +14,7 @@ public class PostSearchDTO {
 	private int postId;
 	private TagEntity tag;
 	private String subject;
+	private boolean isDone;
 	private int writerId;
 	private String writerName;
 	private boolean isConfirmedUser;

@@ -28,15 +28,20 @@
 					</th:block>
 				</div>
 				<!-- 기본 정보 -->
-				<div class="text-left">
-					<h2 th:text="${user.name}"></h2>
-					<h4 th:text="|(${user.loginId})|" class="text-light"></h4>
-					<th:block th:if="${user.introduce} != null">
-						<span th:text="${user.introduce}"></span>
-					</th:block>
+				<div class="mt-5 py-2">
+					<div class="text-left">
+						<div class="d-flex">
+							<h2 th:text="${user.name}"></h2>
+							<img th:if="${user.isConfirmed}" src="/img/confirmed.png" height="18" width="18">
+						</div>
+						<h4 th:text="|(${user.loginId})|" class="text-light"></h4>
+						<th:block th:if="${user.introduce} != null">
+							<span th:text="${user.introduce}"></span>
+						</th:block>
+					</div>
 				</div>
 				<!-- 로그아웃 버튼 -->
-				<div class="d-flex justify-content-end">
+				<div class="d-flex justify-content-end mt-5">
 					<th:block th:if="${session.userId} == ${user.id}">
 						<a href="/user/sign-out" class="btn btn-dark shadow">로그아웃</a>
 					</th:block>

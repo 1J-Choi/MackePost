@@ -1,6 +1,7 @@
 package com.markepost.image.bo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -23,5 +24,9 @@ public class ImageBO {
 				.build();
 		
 		imageRepository.save(image);
+	}
+	
+	public List<ImageEntity> getImageList(int postId) {
+		return imageRepository.findAllByPostId(postId);
 	}
 }

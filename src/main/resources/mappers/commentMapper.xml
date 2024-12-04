@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.markepost.comment.mapper.CommentMapper">
+	<insert id="insertComment" 
+	parameterType="map">
+		INSERT INTO `comment`
+		(
+			`postId`
+			, `userId`
+			, `content`
+			, `isDeleted`
+			, `createdAt`
+			, `updatedAt`	
+		)
+		VALUES
+		(
+			#{postId}
+			, #{userId}
+			, #{content}
+			, false
+			, NOW()
+			, NOW()
+		)
+	</insert>
+	<insert id="insertSubComment" 
+	parameterType="map">
+		INSERT INTO `subComment`
+		(
+			`postId`
+			, `commentId`
+			, `userId`
+			, `content`
+			, `isDeleted`
+			, `createdAt`
+			, `updatedAt`	
+		)
+		VALUES
+		(
+			#{postId}
+			, #{upperCommentId}
+			, #{userId}
+			, #{content}
+			, false
+			, NOW()
+			, NOW()
+		)
+	</insert>
+	<select id="getCommentListByPostId" 
+	parameterType="int" 
+	resultType="com.markepost.comment.domain.Comment">
+		SELECT
+			`id`
+			, `postId`
+			, `userId`
+			, `content`
+			, `isDeleted`
+			, `createdAt`
+			, `updatedAt`
+		FROM
+			`comment`
+		WHERE
+			`postId` = #{postId}
+	</select>
+	<select id="getSubCommentListByCommentId" 
+	parameterType="int" 
+	resultType="com.markepost.comment.domain.SubComment">
+		SELECT
+			`id`
+			, `postId`
+			, `commentId`
+			, `userId`
+			, `content`
+			, `isDeleted`
+			, `createdAt`
+			, `updatedAt`
+		FROM
+			`subComment`
+		WHERE
+			`commentId` = #{commentId}
+	</select>
+</mapper>

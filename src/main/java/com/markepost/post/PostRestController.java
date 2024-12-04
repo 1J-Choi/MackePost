@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -95,6 +96,25 @@ public class PostRestController {
 			result.put("error_message", "일반 게시글을 등록하는데 실패했습니다.");
 		}
 				
+		return result;
+	}
+	
+	@PatchMapping("/market-end")
+	public Map<String, Object> marketEnd(
+			@RequestParam("postId") int postId, 
+			HttpSession session) {
+		int userId = (int) session.getAttribute("userId");
+		
+		int rowCount = postBO.updateMarketPostIsDone(postId, userId);
+		Map<String, Object> result = new HashMap<>();
+		if(rowCount > 0) {
+			result.put("code", 200);
+			result.put("result", "성공");
+		} else {
+			result.put("code", 400);
+			result.put("error_message", "거래 완료 기능에 문제가 발생했습니다.");
+		}
+		
 		return result;
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.markepost.post.domain.MarketPost;
 import com.markepost.post.domain.Post;
 
 @Mapper
@@ -27,4 +28,9 @@ public interface PostMapper {
 			@Param("userIdList") List<Integer> userIdList, 
 			@Param("pageSize") int pageSize, 
 			@Param("offset") int offset);
+	public Post selectPostById(int postId);
+	public MarketPost getMarketPostById(int postId);
+	public int updateMarketPostIsDone(
+			@Param("postId") int postId, 
+			@Param("userId") int userId);
 }

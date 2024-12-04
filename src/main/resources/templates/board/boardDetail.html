@@ -47,8 +47,8 @@
 						<a th:if="${tag.tagType.name() == 'INGAME'}"  th:data-tag-id="${tag.id}"
 						class="rounded bg-warning p-1 mr-1 mb-1 shadow-sm text-dark drag-prevent tagBtn" th:text="${tag.tagName}"></a>
 						<!-- 실물 태그 => 오렌지 -->
-						<div th:if="${tag.tagType.name() == 'REAL'}"  th:data-tag-id="${tag.id}"
-						class="rounded bg-orange bg-orange-hover p-1 mr-1 mb-1 shadow-sm text-dark drag-prevent tagBtn" th:text="${tag.tagName}"></div>
+						<a th:if="${tag.tagType.name() == 'REAL'}"  th:data-tag-id="${tag.id}"
+						class="rounded bg-orange bg-orange-hover p-1 mr-1 mb-1 shadow-sm text-dark drag-prevent tagBtn" th:text="${tag.tagName}"></a>
 					</th:block>		
 				</div>
 					
@@ -89,7 +89,13 @@
 									<div class="d-flex">
 										<a th:href="|/post/post-detail-view?postId=${post.postId}|" 
 										class="text-dark">
-											<span th:text="${post.subject}"></span> ♥<span th:text="${post.likeCount}"></span>
+											<th:block th:if="${post.isDone}">
+												<span th:text="${post.subject}" class="text-truncate text-secondary text-line-through"></span>
+											</th:block>
+											<th:block th:unless="${post.isDone}">
+												<span th:text="${post.subject}" class="text-truncate"></span>
+											</th:block>
+											 ♥<span th:text="${post.likeCount}"></span>
 										</a> 
 									</div>
 								</td>
