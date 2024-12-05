@@ -21,4 +21,6 @@ public interface CommentMapper {
 			@Param("userId") int userId);
 	public List<Comment> getCommentListByPostId(int postId);
 	public List<SubComment> getSubCommentListByCommentId(int commentId);
+	public int updateCommentDeleted(int commentId);
+	public int updateSubCommentDeleted(int subCommentId);
 }

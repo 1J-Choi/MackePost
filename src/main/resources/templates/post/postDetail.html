@@ -112,25 +112,126 @@
 			<hr>
 			
 			<!-- 댓글(대댓글) 기능 -->
-			<div class="rounded shadow-sm">
+			<div class="rounded shadow-sm p-3">
 				<h3>댓글</h3>
 				<!-- 댓글 대댓글 노출 -->
-				<div th:each="comment : ${postDetail.commentList}">
-					<div class="d-flex">
-						<a th:href="|/user/userpage-view?userId=${comment.comment.userId}|">
-							<span th:text="${comment.userName}" class="text-dark font-weight-bold"></span>
-							<!-- 인증된 유저 -->
-							<img th:if="${comment.isComfirmed}"  src="/img/confirmed.png" height="18" width="18">
-							<!-- main Admin -->
-							<img th:if="${comment.isAdmin && comment.isMain}" src="/img/admin.png" height="18" width="18">
-							<!-- sub Admin -->
-							<img th:if="${comment.isAdmin && !comment.isMain}" src="/img/subAdmin.png" height="18" width="18">
-							<span class="text-dark font-weight-bold">: </span>
-						</a>
+				<div th:each="comment : ${postDetail.commentList}" class="mt-1 rounded border shadow-sm">
+					<!-- 삭제 안된 댓글일 때 -->
+					<th:block th:unless="${comment.comment.isDeleted}">
+						<div class="d-flex bg-white justify-content-between p-1">
+							<a th:href="|/user/userpage-view?userId=${comment.comment.userId}|">
+								<span th:text="${comment.userName}" class="text-dark font-weight-bold"></span>
+								<!-- 인증된 유저 -->
+								<img th:if="${comment.isComfirmed}"  src="/img/confirmed.png" height="18" width="18">
+								<!-- main Admin -->
+								<img th:if="${comment.isAdmin && comment.isMain}" src="/img/admin.png" height="18" width="18">
+								<!-- sub Admin -->
+								<img th:if="${comment.isAdmin && !comment.isMain}" src="/img/subAdmin.png" height="18" width="18">
+								<span class="text-dark font-weight-bold">: </span>
+							</a>
+							<div class="d-flex">
+								<!-- 작성일 -->
+								<div th:text="${comment.comment.createdAt}" class="text-secondary text-sm mr-1"></div>
+								<!-- 신고 -->
+								<th:block th:if="${session.userId != null} and ${session.userId != comment.comment.userId}">
+									<a th:href="|/report/create?reportType=comment&fkId=${comment.comment.id}|">
+										<img src="https://cdn.pixabay.com/photo/2016/03/31/15/15/revolving-light-1293105_1280.png" 
+										alt="신고 이미지" height="18" width="18" class="mr-1">
+									</a>
+								</th:block>
+								<!-- 삭제 -->
+								<th:block th:if="${session.userId != null} and ${session.userId == comment.comment.userId}">
+									<a href="#" class="commentDeleteBtn mr-1" th:data-comment-id="${comment.comment.id}">
+										<img src="https://cdn.pixabay.com/photo/2013/07/13/01/12/trashcan-155299_1280.png" 
+										alt="삭제 이미지" height="18" width="18">
+									</a>
+								</th:block>
+								<!-- 대댓글 -->
+								<th:block th:if="${session.userId != null}">
+									<a href="#" class="subCommentBtn mr-1"  th:data-comment-id="${comment.comment.id}">
+										<img src="https://cdn.pixabay.com/photo/2012/04/11/11/21/arrow-27521_1280.png" 
+										alt="대댓글 이미지" height="18" width="18">
+									</a>
+								</th:block>
+							</div>
+						</div>
+						<div class="mt-1">
+							<div th:text="${comment.comment.content}" class="ml-2 p-1"></div>
+						</div>
+					</th:block>
+					
+					<!-- 삭제 된 댓글일 때 -->
+					<th:block th:if="${comment.comment.isDeleted}">
+						<div class="bg-white p-2 text-secondary">
+							(삭제된 댓글입니다.)
+						</div>
+					</th:block>
+					
+					<!-- 대댓글 리스트 -->
+					<div class="ml-4">
+						<!-- 나머지 댓글과 똑같이 -->
+						<div th:each="subComment : ${comment.subCommentList}" class="border m-1 p-1">
+							
+							<!-- 삭제 안됬을 시 -->
+							<th:block th:unless="${subComment.subComment.isDeleted}">
+								<div class="d-flex bg-white justify-content-between">
+									<a th:href="|/user/userpage-view?userId=${subComment.subComment.userId}|">
+										<span th:text="${subComment.userName}" class="text-dark font-weight-bold"></span>
+										<!-- 인증된 유저 -->
+										<img th:if="${subComment.isComfirmed}"  src="/img/confirmed.png" height="18" width="18">
+										<!-- main Admin -->
+										<img th:if="${subComment.isAdmin && subComment.isMain}" src="/img/admin.png" height="18" width="18">
+										<!-- sub Admin -->
+										<img th:if="${subComment.isAdmin && !subComment.isMain}" src="/img/subAdmin.png" height="18" width="18">
+										<span class="text-dark font-weight-bold">: </span>
+									</a>
+									<div class="d-flex">
+										<!-- 작성일 -->
+										<div th:text="${subComment.subComment.createdAt}" class="text-secondary text-sm mr-1"></div>
+										<!-- 신고 -->
+										<th:block th:if="${session.userId != null} and ${session.userId != subComment.subComment.userId}">
+											<a th:href="|/report/create?reportType=subComment&fkId=${subComment.subComment.id}|">
+												<img src="https://cdn.pixabay.com/photo/2016/03/31/15/15/revolving-light-1293105_1280.png" 
+												alt="신고 이미지" height="18" width="18" class="mr-1">
+											</a>
+										</th:block>
+										<!-- 삭제 -->
+										<th:block th:if="${session.userId != null} and ${session.userId == subComment.subComment.userId}">
+											<a href="#" class="subCommentDeleteBtn mr-1" th:data-comment-id="${subComment.subComment.id}" 
+											th:data-post-id="${postDetail.post.id}">
+												<img src="https://cdn.pixabay.com/photo/2013/07/13/01/12/trashcan-155299_1280.png" 
+												alt="삭제 이미지" height="18" width="18">
+											</a>
+										</th:block>
+									</div>
+								</div>
+								
+								<div class="mt-1">
+									<div th:text="${subComment.subComment.content}" class="ml-2 p-1"></div>
+								</div>
+							</th:block>
+							
+							<!-- 삭제 됬을 시 -->
+							<th:block th:if="${subComment.subComment.isDeleted}">
+								<div class="bg-white p-2 text-secondary">
+									(삭제된 댓글입니다.)
+								</div>
+							</th:block>
+						</div>
 					</div>
+					
+					<!-- 대댓글 작성창 -->
+					<div class="input-group mt-1 p-2 pl-4 d-none subCommentDiv" th:data-comment-id="${comment.comment.id}">
+						<input type="text" class="form-control">
+						<div class="input-group-append">
+							<button type="button"  class="btn btn-success subCommentSubmitBtn" th:data-comment-id="${comment.comment.id}"
+							  th:data-post-id="${postDetail.post.id}">등록</button>
+						</div>
+					</div>
+					
 				</div>
 				<!-- 댓글 입력창 -->
-				<div class="input-group">
+				<div class="input-group mt-2">
 					<input type="text" id="comment" class="form-control">
 					<div class="input-group-append">
 						<button type="button" id="commentSubmitBtn" class="btn btn-success" th:data-post-id="${postDetail.post.id}">등록</button>
@@ -243,7 +344,7 @@
     				}
     				, success:function(data) {
     					if(data.code == 200) {
-    						location.href = location.href;
+    						location.reload(true);
     					} else if(data.code == 403) {
     						alert(error_message + '\n정지기간: ' + untilTime);
     					} else {
@@ -254,7 +355,107 @@
     					alert('댓글 작성 중 오류가 발생했습니다.');
     				}
     			});
-    		})
-    	});
+    		});
+    		
+    		// 대댓글창 토글
+    		$(document).on('click', '.subCommentBtn', function(e) {
+    			e.preventDefault();
+    			// alert('대댓글창 열어!');
+    			let commentId = $(this).data('comment-id');
+    			$(`.subCommentDiv[data-comment-id="${commentId}"]`).toggleClass('d-none');
+    			
+    		});
+    		
+    		// 대댓글 등록
+    		$('.subCommentSubmitBtn').on('click', function() {
+    			let commentId = $(this).data('comment-id');
+    			let content = $(this).parents().prev('input').val();
+    			let postId = $(this).data('post-id');
+    			// alert(content);
+    			// console.log(commentId);
+    			// console.log(postId);
+    			
+    			// validation
+    			if (!content) {
+    				alert('대댓글 내용이 비어있습니다.');
+    				return false;
+    			}
+    			
+    			// ajax
+    			$.ajax({
+    				type:'POST'
+    				, url:'/comment/create'
+    				, data:{
+    					'upperCommentId':commentId
+    					, 'content':content
+    					, 'postId':postId
+    				}
+    				,success:function(data) {
+    					if(data.code == 200) {
+    						location.reload(true);
+    					} else if(data.code == 403) {
+    						alert(error_message + '\n정지기간: ' + untilTime);
+    					} else {
+    						alert(data.error_message);
+    					}
+    				}
+    				, error:function(e) {
+    					alert('대댓글 작성 중 오류가 발생했습니다.');
+    				}
+    			});
+    		});
+    		
+    		// 댓글 삭제 (isDeleted => true)
+    		$('.commentDeleteBtn').on('click', function(e) {
+    			e.preventDefault();
+    			let commentId = $(this).data('comment-id');
+    			// console.log(commentId);
+    			
+    			$.ajax({
+    				type:'PATCH'
+    				, url:'/comment/delete'
+    				, data:{
+    					'commentType':'comment'
+    					, 'id':commentId
+    				}
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						location.reload(true);
+    					} else {
+    						alert(data.error_message);
+    					}
+    				}
+    				, error:function(e) {
+    					alert('댓글 삭제 중 오류가 발생했습니다.');
+    				}
+    			});
+    		});
+    		
+    		// 대댓글 삭제 (isDeleted => true)
+    		$('.subCommentDeleteBtn').on('click', function(e) {
+    			e.preventDefault();
+    			let subCommentId = $(this).data('comment-id');
+    			// console.log(subCommentId);
+    			
+    			$.ajax({
+    				type:'PATCH'
+    				, url:'/comment/delete'
+    				, data:{
+    					'commentType':'subComment'
+    					, 'id':subCommentId
+    				}
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						location.reload(true);
+    					} else {
+    						alert(data.error_message);
+    					}
+    				}
+    				, error:function(e) {
+    					alert('댓글 삭제 중 오류가 발생했습니다.');
+    				}
+    			});
+    		});
+    	});	
     </script>
 </th:block>

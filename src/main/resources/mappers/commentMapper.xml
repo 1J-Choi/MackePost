@@ -79,4 +79,22 @@
 		WHERE
 			`commentId` = #{commentId}
 	</select>
+	<update id="updateCommentDeleted" 
+	parameterType="int">
+		UPDATE
+			`comment`
+		SET
+			`isDeleted` = true
+		WHERE
+			`id` = #{commentId}
+	</update>
+	<update id="updateSubCommentDeleted" 
+	parameterType="int">
+		UPDATE
+			`subComment`
+		SET
+			`isDeleted` = true
+		WHERE
+			`id` = #{commentId}
+	</update>
 </mapper>

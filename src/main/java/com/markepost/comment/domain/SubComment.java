@@ -10,7 +10,7 @@ public class SubComment {
 	private int postId;
 	private int commentId;
 	private int userId;
-	private int content;
+	private String content;
 	private boolean isDeleted;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;

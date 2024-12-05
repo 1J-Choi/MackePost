@@ -81,4 +81,13 @@ public class CommentBO{
 		
 		return commentList;
 	}
+	
+	public int updateCommentDeleted(String commentType, int id) {
+		if(commentType.equals("comment")) { // 댓글 isDeleted 전환
+			return commentMapper.updateCommentDeleted(id);
+		} else if(commentType.equals("subComment")) {
+			return commentMapper.updateSubCommentDeleted(id);
+		}
+		return 0;
+	}
 }
