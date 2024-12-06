@@ -29,8 +29,11 @@ public interface PostMapper {
 			@Param("pageSize") int pageSize, 
 			@Param("offset") int offset);
 	public Post selectPostById(int postId);
-	public MarketPost getMarketPostById(int postId);
+	public MarketPost selectMarketPostById(int postId);
 	public int updateMarketPostIsDone(
 			@Param("postId") int postId, 
 			@Param("userId") int userId);
+	public int updatePost(Post post);
+	public int updateMarketPost(MarketPost marketPost);
+	
 }

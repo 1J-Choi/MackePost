@@ -13,6 +13,7 @@ import com.markepost.board.domain.Board;
 import com.markepost.post.bo.PostBO;
 import com.markepost.post.domain.Post;
 import com.markepost.post.domain.PostDetailDTO;
+import com.markepost.post.domain.PostUpdateDTO;
 import com.markepost.tag.bo.TagBO;
 import com.markepost.tag.domain.PostTagDTO;
 import com.markepost.tag.entity.TagEntity;
@@ -50,5 +51,15 @@ public class PostController {
 		
 		model.addAttribute("postDetail", postDetail);
 		return "post/postDetail";
+	}
+	
+	@GetMapping("/update")
+	public String updatePost(
+			@RequestParam("postId") int postId, Model model) {
+		PostUpdateDTO postUpdateDTO = postBO.getPostUpdateDTO(postId);
+		
+		model.addAttribute("postUpdateDTO", postUpdateDTO);
+		
+		return "post/updatePost";
 	}
 }

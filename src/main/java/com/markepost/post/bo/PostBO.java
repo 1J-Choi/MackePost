@@ -20,6 +20,7 @@ import com.markepost.post.domain.MarketPost;
 import com.markepost.post.domain.Post;
 import com.markepost.post.domain.PostDetailDTO;
 import com.markepost.post.domain.PostSearchDTO;
+import com.markepost.post.domain.PostUpdateDTO;
 import com.markepost.post.mapper.PostMapper;
 import com.markepost.tag.bo.TagBO;
 import com.markepost.tag.entity.TagEntity;
@@ -43,6 +44,10 @@ public class PostBO{
 	
 	public Post getPostById(int postId) {
 		return postMapper.selectPostById(postId);
+	}
+	
+	public MarketPost getMarketPost(int postId) {
+		return postMapper.selectMarketPostById(postId);
 	}
 	
 	public Post addNormalPost(
@@ -112,7 +117,7 @@ public class PostBO{
 			postSearchDTO.setPostId(post.getId());
 			postSearchDTO.setTag(tagBO.getTagById(post.getTagId()));
 			postSearchDTO.setSubject(post.getSubject());
-			MarketPost marketPost = postMapper.getMarketPostById(post.getId());
+			MarketPost marketPost = postMapper.selectMarketPostById(post.getId());
 			if(marketPost != null) {
 				postSearchDTO.setDone(marketPost.isDone()); // 미완료 => false, 완료 => true
 			}
@@ -147,7 +152,7 @@ public class PostBO{
 		UserEntity user = userBO.getUserEntityById(post.getUserId());
 		List<ImageEntity> imageList = imageBO.getImageList(postId);
 		TagEntity tag = tagBO.getTagById(post.getTagId());
-		MarketPost marketPost = postMapper.getMarketPostById(post.getId());
+		MarketPost marketPost = postMapper.selectMarketPostById(post.getId());
 		List<CommentDTO> commentList = commentBO.getCommentDTOList(post);
 		postDetailDTO.setPost(post);
 		postDetailDTO.setUser(user);
@@ -175,5 +180,33 @@ public class PostBO{
 	
 	public int updateMarketPostIsDone(int postId, int userId) {
 		return postMapper.updateMarketPostIsDone(postId, userId);
+	}
+	
+	public PostUpdateDTO getPostUpdateDTO(int postId) {
+		Post post = postMapper.selectPostById(postId);
+		TagEntity tag = tagBO.getTagById(post.getTagId());
+		MarketPost marketPost = postMapper.selectMarketPostById(postId);
+		return new PostUpdateDTO(post, tag, marketPost);
+	}
+	
+	public int updatePost(Post post, List<ImageEntity> images, List<MultipartFile> files, String userLoginId) {
+		List<String> imagePathList = new ArrayList<>();
+		if(files != null) {
+			imagePathList = fileManager.uploadFile(files, userLoginId + "_post");
+			if(imagePathList.get(0) != null && images.get(0).getImagePath() != null) {
+				// 폴더, 이미지 제거(컴퓨터-서버)
+				fileManager.deleteFile(images.get(0).getImagePath());
+				imageBO.deleteImage(post.getId());
+			}
+			for (String imagePath : imagePathList) {
+				imageBO.addImage(post.getId(), imagePath);
+			}
+		}
+		
+		return postMapper.updatePost(post);
+	}
+	
+	public int updateMarketPost(MarketPost marketPost) {
+		return postMapper.updateMarketPost(marketPost);
 	}
 }

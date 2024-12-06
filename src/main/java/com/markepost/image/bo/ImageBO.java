@@ -29,4 +29,8 @@ public class ImageBO {
 	public List<ImageEntity> getImageList(int postId) {
 		return imageRepository.findAllByPostId(postId);
 	}
+	
+	public void deleteImage(int postId) {
+		imageRepository.deleteByPostId(postId);
+	}
 }

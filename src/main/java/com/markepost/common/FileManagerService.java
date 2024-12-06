@@ -53,32 +53,41 @@ public class FileManagerService {
 			return "/images/" + directoryName + "/" + file.getOriginalFilename();
 		}
 		
+		/**
+		 * 파일&디렉토리 삭제
+		 * File.walk()를 통해 디렉토리 내 파일 및 하위파일을 검색
+		 * 이후 해당 요소들을 forEach() 람다식을 사용하여 하나씩 반복 삭제
+		 * @param image
+		 */
 		public void deleteFile(String image) {
-			Path path = Paths.get(FILE_UPLOAD_PATH + image.replace("/images/", ""));
+			Path filePath = Paths.get(FILE_UPLOAD_PATH + image.replace("/images/", ""));
+			Path directoryPath = filePath.getParent();
 			
 			// 삭제할 이미지가 있는가?
-			if(Files.exists(path)) {
+			if(Files.exists(filePath)) {
 				// 이미지 파일 삭제
-				try {
-					Files.delete(path);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					log.info("[#####파일매니저 파일 삭제#####] imagePath:{}", image);
-					return; // 이미지 파일에 실패하였으므로 폴더 실패 생략
-				}
-				
-				// 폴더(directory) 삭제
-				path = path.getParent(); // 부모 요소로 이동 => directory
-				if(Files.exists(path)) {
 					try {
-						Files.delete(path);
+						// Files.delete(path);
+						Files.walk(directoryPath) // 디렉토리 내의 모든 파일과 하위 폴더를 순환
+							.forEach(path -> {
+								try {
+									Files.delete(path);
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									log.info("[#####파일매니저 파일 삭제 실패#####] imagePath:{}", image);
+									return; // 이미지 파일에 실패하였으므로 폴더 실패 생략
+								}
+							});
+						
+						Files.delete(directoryPath);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
-						log.info("[#####파일매니저 directory 삭제#####] imagePath:{}", image);
+						log.info("[#####디렉토리 파일 삭제 실패 #####] imagePath:{}", directoryPath);
 					}
-				}
 			}
 		}
+		
+		
 		
 		/**
 		 * 게시판의 여러 이미지 등록

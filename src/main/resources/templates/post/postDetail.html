@@ -261,7 +261,7 @@
 								<div class="rounded bg-secondary shadow-sm text-white text-center p-2 mr-1">거래 완료</div>
 							</th:block>
 						</th:block>
-							<button type="button" id="updatePostBtn" class="btn btn-warning shadow-sm mr-1">수정하기</button>
+							<a th:href="|/post/update?postId=${postDetail.post.id}|" class="btn btn-warning shadow-sm mr-1">수정하기</a>
 							<button type="button" id="deletePostBtn" class="btn btn-danger shadow-sm">삭제하기</button>
 					</th:block>
 				</div>
@@ -432,7 +432,7 @@
     		});
     		
     		// 대댓글 삭제 (isDeleted => true)
-    		$('.subCommentDeleteBtn').on('click', function(e) {
+    		$(document).on('click', '.subCommentDeleteBtn', function(e) {
     			e.preventDefault();
     			let subCommentId = $(this).data('comment-id');
     			// console.log(subCommentId);

@@ -124,7 +124,7 @@
 		WHERE
 			`id` = #{postId}
 	</select>
-	<select id="getMarketPostById" 
+	<select id="selectMarketPostById" 
 	parameterType="int" 
 	resultType="com.markepost.post.domain.MarketPost">
 		SELECT
@@ -152,5 +152,27 @@
 		WHERE
 			`m`.`postId` = #{postId}
 			AND `p`.`userId` = #{userId}
+	</update>
+	<update id="updatePost" 
+	parameterType="com.markepost.post.domain.Post">
+		UPDATE
+			`post`
+		SET
+			`subject` = #{subject},
+			`content` = #{content},
+			`updatedAt` = NOW()
+		WHERE
+			`id` = #{id}
+	</update>
+	<update id="updateMarketPost" 
+	parameterType="com.markepost.post.domain.MarketPost">
+		UPDATE
+			`marketPost`
+		SET
+			`itemName` = #{itemName},
+			`price` = #{price},
+			`updatedAt` = NOW()
+		WHERE
+			`postId` = #{postId}
 	</update>
 </mapper>

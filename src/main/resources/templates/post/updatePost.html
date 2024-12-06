@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/defaultLayout}">
+<section layout:fragment="content" class="contents d-flex justify-content-center">
+	<div class="h-90 col-10 my-2">
+		<div class="bg-light shadow rounded my-5 p-3">
+			<h1 class="my-2">게시글 수정</h1>
+			<!-- 상단부 (태그 제목) -->
+			<div class="d-flex justify-content-start align-items-center">
+				<!-- 태그 -->
+				<th:block th:if="${postUpdateDTO.tag} != null">
+					<!-- 일반 태그 => 회색 -->
+					<div th:if="${postUpdateDTO.tag.tagType.name() == 'NORMAL'}"
+					class="rounded bg-secondary p-1 mr-2 mb-1 shadow-sm text-white drag-prevent" th:text="${postUpdateDTO.tag.tagName}"></div>
+					<!-- 인게임 태그 => 노랑 -->
+					<div th:if="${postUpdateDTO.tag.tagType.name() == 'INGAME'}"
+					class="rounded bg-warning p-1 mr-2 mb-1 shadow-sm text-dark drag-prevent" th:text="${postUpdateDTO.tag.tagName}"></div>
+					<!-- 실물 태그 => 오렌지 -->
+					<div th:if="${postUpdateDTO.tag.tagType.name() == 'REAL'}"
+					class="rounded bg-orange p-1 mr-2 mb-1 shadow-sm text-dark drag-prevent" th:text="${postUpdateDTO.tag.tagName}"></div>
+				</th:block>
+				<!-- 제목 -->
+				<input type="text" id="subject" class="form-control col-10" th:value="${postUpdateDTO.post.subject}">
+			</div>
+			
+			<!-- 글 작성 부분 -->
+			<div class="mt-3">
+				<!-- 일반글 부분 -->
+				<th:block th:if="${postUpdateDTO.marketPost == null}">
+					<div id="normal">
+						<textarea id="normalContent" class="form-control" rows="10" th:text="${postUpdateDTO.post.content}"></textarea>
+					</div>
+				</th:block>
+				
+				<!-- 이미지 등록 -->
+				<div class="my-2">
+					<!-- 이미지 -->
+					<div id="imageList">
+						<div class="input-group mb-2 imageFile">
+							<input type="file" class="file" accept=".jpg, .png, .gif">
+						</div>
+					</div>
+					
+					<!-- 이미지 추가하기 -->
+					<button type="button" class="btn btn-warning" id="imagePlusBtn">이미지 추가</button>
+				</div>
+				
+				<!-- 거래글 부분 -->
+				<th:block th:unless="${postUpdateDTO.marketPost == null}">
+					<div id="market">
+						<div class="input-group mb-2">
+							<div class="input-group-prepend">
+	    						<span class="input-group-text">상품명</span>
+	  						</div>
+	    						<input type="text" id="itemName" class="form-control" th:value="${postUpdateDTO.marketPost.itemName}">
+						</div>
+						
+						<div class="input-group mb-2" th:if="${postUpdateDTO.tag.tradeType.name() != 'EXCHANGE'}">
+							<div class="input-group-prepend">
+	    						<span class="input-group-text">가격</span>
+	  						</div>
+							<input type="number" id="price" class="form-control" th:value="${postUpdateDTO.marketPost.price}">
+							<div class="input-group-append">
+								<button type="button" id="priceTogleBtn" class="btn btn-secondary" th:data-price="${postUpdateDTO.marketPost.price}">가격없음</button>
+							</div>
+						</div>
+						<div class="input-group">
+							<div class="input-group-prepend">
+	    						<span class="input-group-text">설명</span>
+	  						</div>
+							<textarea id="marketContent" class="form-control" rows="10" th:text="${postUpdateDTO.post.content}"></textarea>
+						</div>
+					</div>
+				</th:block>
+			</div>
+			
+			
+			<!-- 하단 버튼 -->
+			<div class="d-flex justify-content-between mt-2">
+				<a th:href="|/post/post-detail-view?postId=${postUpdateDTO.post.id}|" class="btn btn-secondary shadow-sm">게시글로</a>
+				<button type="button" id="postUpdateBtn" class="btn btn-warning shadow-sm" th:data-post-id="${postUpdateDTO.post.id}">수정하기</button>
+			</div>		
+		</div>
+	</div>
+</section>
+
+<th:block layout:fragment="script">
+    <script>
+    	$(document).ready(function() {
+    		// 이미지 추가/제거를 위한 초기 변수 설정
+    		const maxImage = 5;
+    		let imageCount = 1;
+    		
+    		// 이미지 추가 버튼
+    		$('#imagePlusBtn').on('click', function(e) {
+    			e.preventDefault();
+    			
+    			// iamgeCount가 maxImage보다 작을 때만 늘리기
+    			if (imageCount < maxImage) {
+    				imageCount++;
+    				
+    				$('#imageList').append(`
+    					<div class="d-flex mb-2 imageFile">
+							<input type="file" class="file mr-2" accept=".jpg, .png, .gif">
+							<button type="button" class="btn btn-danger imageDeleteBtn">삭제</button>
+						</div>
+    						`)
+    			}
+    		});
+    		
+    		// 이미지 삭제 버튼
+    		$(document).on('click', '.imageDeleteBtn', function() {
+    			// alert('삭제');
+    			$(this).closest('.imageFile').remove();
+    			imageCount--;
+    		});
+    		
+    		// 가격없음 토글
+    		$(document).on('click', '#priceTogleBtn',function() {
+    			if($('#price').attr('disabled')) {
+    				$('#price').attr('disabled', false);
+    				$('#price').val($(this).data('price'));
+    			} else {
+    				$('#price').val('');
+    				$('#price').attr('disabled', true);
+    			}
+    		});
+    		
+    		// 게시글 업데이트
+    		$('#postUpdateBtn').on('click', function() {
+    			let subject = $('#subject').val();
+    			let postId = $(this).data('post-id');
+    			// console.log(subject);
+				let files = [];
+    			
+    			// 제목 validation
+    			if(!subject) {
+    				alert('제목을 입력하세요');
+    				return;
+    			}
+    			
+    			// 이미지 등록 및 validation
+    			$('.file').each(function() {
+    				if($(this).val()) {
+        				// alert('이미지 있다');
+        				let extension = $(this).val().split('.').pop().toUpperCase();
+        				// console.log(extension);
+        				if($.inArray(extension, ['JPG', 'PNG', 'GIF']) == -1) {
+        					// 배열중에 있을 시에는 index 번호, 없으면 -1
+        					alert('이미지 파일(jpg, png, gif)만 업로드 할 수 있습니다.');
+        					$(this).val('');
+        					return;
+        				}
+    				files.push($(this)[0].files[0]);
+        			}
+    			});
+    			
+    			let formData = new FormData();
+    			formData.append('postId', postId);
+    			formData.append('subject', subject);
+    			files.forEach((item) => {
+    				formData.append('files', item);
+    			});
+    			
+    			if($('#normal').length) {
+    				// 일반글
+    				// console.log('일반글');
+    				let normalContent = $('#normalContent').val();
+    				console.log(normalContent)
+    				
+    				// validation
+    				if (!normalContent) {
+    					alert('본문을 입력하세요.');
+    					return ;
+    				}
+    				
+    				formData.append('content', normalContent);
+    			} else {
+    				// 거래글
+    				// console.log('거래글');
+    				let itemName = $('#itemName').val();
+    				let price = $('#price').val();
+    				let marketContent = $('#marketContent').val();
+    				
+    				// validation
+    				if (!itemName) {
+    					alert('상품명을 입력해주세요')
+    					return;
+    				}
+    				if (!marketContent) {
+    					alert('설명란을 입력해주세요')
+    					return;
+    				}
+    				
+    				formData.append('itemName', itemName);
+    				formData.append('price', price);
+    				formData.append('content', marketContent);
+    			}
+    			
+    			$.ajax({
+					type:'PATCH'
+					, url:'/post/update'
+					, data: formData
+					, processData:false
+	    			, contentType:false
+	    			, enctype:"multipart/form-data"
+	    			, success:function(data) {
+	    				if(data.code == 200) {
+	    					location.href = '/post/post-detail-view?postId=' + postId;
+	    				} else {
+	    					alert(data.error_message);
+	    				}
+	    			}
+					, error:function(e) {
+						alert('게시글 수정 중 오류가 발생했습니다');
+					}
+				});
+    		});
+    	});
+    </script>
+</th:block>

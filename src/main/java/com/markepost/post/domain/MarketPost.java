@@ -8,7 +8,7 @@ import lombok.Data;
 public class MarketPost {
 	private int postId;
 	private String itemName;
-	private int price;
+	private Integer price;
 	private boolean isDone;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;

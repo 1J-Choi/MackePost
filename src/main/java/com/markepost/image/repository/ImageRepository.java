@@ -8,4 +8,5 @@ import com.markepost.image.entity.ImageEntity;
 
 public interface ImageRepository extends JpaRepository<ImageEntity, Integer>{
 	public List<ImageEntity> findAllByPostId(int postId);
+	public void deleteByPostId(int postId);
 }
