@@ -175,4 +175,18 @@
 		WHERE
 			`postId` = #{postId}
 	</update>
+	<delete id="deletePost" 
+	parameterType="int">
+		DELETE FROM
+			`post`
+		WHERE
+			`id` = #{postId}
+	</delete>
+	<delete id="deleteMarketPost" 
+	parameterType="int">
+		DELETE FROM
+			`marketPost`
+		WHERE
+			`postId` = #{postId}
+	</delete>
 </mapper>

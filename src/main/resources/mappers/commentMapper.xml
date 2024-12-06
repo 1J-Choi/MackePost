@@ -97,4 +97,18 @@
 		WHERE
 			`id` = #{commentId}
 	</update>
+	<delete id="deleteCommentByPostId" 
+	parameterType="int">
+		DELETE FROM
+			`comment`
+		WHERE
+			`postId` = #{postId}
+	</delete>
+	<delete id="deleteSubCommentByPostId" 
+	parameterType="int">
+		DELETE FROM
+			`subComment`
+		WHERE
+			`postId` = #{postId}
+	</delete>
 </mapper>

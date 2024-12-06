@@ -209,4 +209,30 @@ public class PostBO{
 	public int updateMarketPost(MarketPost marketPost) {
 		return postMapper.updateMarketPost(marketPost);
 	}
+	
+	public void deletePost(int postId) {
+		// 삭제해야 할 것들
+		// post, image, like, comment, subComment
+		// 중간에 오류시 @Transactional 통해서 알아서 롤백 => 굳이 오류처리 X
+		
+		// post 삭제
+		postMapper.deletePost(postId);
+		// marketPost 있을시 이것도 삭제
+		if(postMapper.selectMarketPostById(postId) != null) {
+			postMapper.deleteMarketPost(postId);
+		}
+		
+		// image 있다면 파일과 데이터 삭제
+		List<ImageEntity> images = imageBO.getImageList(postId);
+		if(images != null && !images.isEmpty()) {	
+			fileManager.deleteFile(images.get(0).getImagePath());
+			imageBO.deleteImage(postId);
+		}
+		
+		// like 삭제
+		likeBO.deleteByPostId(postId);
+		
+		// comment및 subComment 삭제
+		commentBO.deleteCommentsByPostId(postId);
+	}
 }

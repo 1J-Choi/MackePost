@@ -90,4 +90,9 @@ public class CommentBO{
 		}
 		return 0;
 	}
+	
+	public void deleteCommentsByPostId(int postId) {
+		commentMapper.deleteCommentByPostId(postId);
+		commentMapper.deleteSubCommentByPostId(postId);
+	}
 }

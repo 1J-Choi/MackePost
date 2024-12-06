@@ -8,4 +8,5 @@ import com.markepost.like.entity.LikeId;
 public interface LikeRepository extends JpaRepository<LikeEntity, LikeId>{
 	public int countByLikeIdPostId(int postId);
 	public int countByLikeId(LikeId likeId);
+	public void deleteByLikeIdPostId(int postId);
 }

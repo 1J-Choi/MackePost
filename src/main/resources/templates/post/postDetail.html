@@ -262,10 +262,33 @@
 							</th:block>
 						</th:block>
 							<a th:href="|/post/update?postId=${postDetail.post.id}|" class="btn btn-warning shadow-sm mr-1">수정하기</a>
-							<button type="button" id="deletePostBtn" class="btn btn-danger shadow-sm">삭제하기</button>
+							<button type="button" id="deletePostBtn" class="btn btn-danger shadow-sm" data-toggle="modal" data-target=".modal">삭제하기</button>
 					</th:block>
 				</div>
 			</div>
+		</div>
+		
+		<div class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<!-- modal-dialog-centered: 수직 기준 가운데 -->
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		    	<div class="modal-header">
+        			<h5 class="modal-title">경고</h5>
+        			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          				<span aria-hidden="true">&times;</span>
+        			</button>
+      			</div>
+      			<div class="modal-body">
+        			<p>게시글 삭제시 내용과 댓글, 이미지가 복구되지 않습니다.
+        			<br>정말로 삭제하시겠습니까?</p>
+      			</div>
+			    <div class="modal-footer">
+	        		<button type="button" class="btn btn-secondary shadow-sm" data-dismiss="modal">닫기</button>
+	        		<button type="button" class="btn btn-danger shadow-sm" id="postDeleteBtn" th:data-post-id="${postDetail.post.id}" 
+	        		th:data-board-id="${postDetail.post.boardId}">게시판 삭제</button>
+	      		</div>	
+		    </div>
+		  </div>
 		</div>
 	</div>
 </section>
@@ -453,6 +476,31 @@
     				}
     				, error:function(e) {
     					alert('댓글 삭제 중 오류가 발생했습니다.');
+    				}
+    			});
+    		});
+    		
+    		// 게시글 삭제
+    		$('#postDeleteBtn').on('click', function() {
+    			let postId = $(this).data('post-id');
+    			let boardId = $(this).data('board-id');
+    			// console.log(postId);
+    			
+    			$.ajax({
+    				type:'DELETE'
+    				, url:'/post/delete'
+    				, data:{
+    					'postId':postId
+    				}
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						location.href = '/board/post-list-view?boardId=' + boardId;
+    					} else {
+    						alert(data.error_message);
+    					}
+    				}
+    				, error: function(e) {
+    					alert('게시글 삭제 중 오류가 발생하였습니다.');
     				}
     			});
     		});

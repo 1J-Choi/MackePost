@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -140,6 +141,17 @@ public class PostRestController {
 		return result;
 	}
 	
+	/**
+	 * 게시글 수정
+	 * @param postId
+	 * @param subject
+	 * @param content
+	 * @param files
+	 * @param itemName
+	 * @param price
+	 * @param session
+	 * @return
+	 */
 	@PatchMapping("/update")
 	public Map<String, Object> updatePost(
 			@RequestParam("postId") int postId, 
@@ -178,6 +190,20 @@ public class PostRestController {
 			result.put("error_message", "게시글 수정에 실패하였습니다.");
 		}
 		
+		return result;
+	}
+	
+	@DeleteMapping("/delete")
+	public Map<String, Object> deletePost(
+			@RequestParam("postId") int postId, 
+			HttpSession session) {
+		// 접속한 유저에 의한것인지 확인용 (이후에 권한 설정 할 것)
+		int userId = (int) session.getAttribute("userId");
+		
+		postBO.deletePost(postId);
+		Map<String, Object> result = new HashMap<>();
+		result.put("code", 200);
+		result.put("result", "성공");
 		return result;
 	}
 }

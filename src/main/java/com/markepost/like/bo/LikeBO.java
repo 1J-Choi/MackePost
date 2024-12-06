@@ -38,4 +38,8 @@ public class LikeBO {
 		LikeId likeId = new LikeId(postId, userId);
 		return likeRepository.countByLikeId(likeId) > 0; 
 	}
+	
+	public void deleteByPostId(int postId) {
+		likeRepository.deleteByLikeIdPostId(postId);
+	}
 }
