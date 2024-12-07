@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/defaultLayout}">
+<section layout:fragment="content" class="contents d-flex justify-content-center">
+	<div class="h-90 col-10 my-2">
+		<div class="bg-light shadow rounded my-5 p-3">
+			<!-- 신고 종류에 따라 노출되는 제목과 출력 내용 변경 변경 -->
+			<th:block th:if="${reportCreateDTO.reportType.name() == 'POST'}">
+				<h1>게시글 신고</h1>
+			</th:block>
+			<th:block th:unless="${reportCreateDTO.reportType.name() == 'POST'}">
+				<h1>댓글 신고</h1>
+			</th:block>
+			
+			<div class="mt-2 mx-2">
+					<div>
+						<!-- 게시글 간략 정보 -->
+						<th:block th:if="${reportCreateDTO.reportType.name() == 'POST'}">
+							<div>제목: <span th:text="${reportCreateDTO.text}"></span></div>
+						</th:block>
+						<!-- (대)댓글 간략 정보 -->
+						<th:block th:unless="${reportCreateDTO.reportType.name() == 'POST'}">
+							<div>댓글 내용: <span th:text="${reportCreateDTO.text}"></span></div>
+						</th:block>
+						<div>작성자: <span th:text="${reportCreateDTO.writeUserName}"></span></div>
+						
+						<div class="mt-2">
+							<h3>신고사유</h3>
+							<textarea id="content" class="form-control" rows="10"></textarea>
+						</div>
+					</div>
+				
+			</div>
+			
+			<!-- 하단 버튼 -->
+			<div class="mt-2 mx-2 d-flex justify-content-between">
+				<a th:href="|/post/post-detail-view?postId=${reportCreateDTO.postId}|" class="btn btn-secondary shadow-sm" id="goBackPostBtn">게시글로</a>
+				<button type="button" class="btn btn-danger" data-toggle="modal" data-target=".modal">신고하기</button>
+			</div>
+			
+			
+		</div>
+		
+		<div class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<!-- modal-dialog-centered: 수직 기준 가운데 -->
+		  <div class="modal-dialog modal-dialog-centered">
+		    <div class="modal-content">
+		    	<div class="modal-header">
+        			<h5 class="modal-title">경고</h5>
+        			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          				<span aria-hidden="true">&times;</span>
+        			</button>
+      			</div>
+      			<div class="modal-body">
+        			<p>허위 또는 악의적인 신고일 경우,
+        			<br>신고자가 제재를 받을 수 있습니다.
+        			<br>정말로 신고하시겠습니까?</p>
+      			</div>
+			    <div class="modal-footer">
+	        		<button type="button" class="btn btn-secondary shadow-sm" data-dismiss="modal">닫기</button>
+	        		<button type="button" class="btn btn-danger shadow-sm" id="reportCreateBtn" 
+	        		th:data-report-type="${reportCreateDTO.reportType}" th:data-fk-id="${reportCreateDTO.fkId}" 
+	        		th:data-board-id="${reportCreateDTO.boardId}">신고하기</button>
+	      		</div>	
+		    </div>
+		  </div>
+		</div>
+	</div>
+</section>
+
+<th:block layout:fragment="script">
+    <script>
+    	$(document).ready(function() {
+    		// 신고 등록하기
+    		$('#reportCreateBtn').on('click', function(){ 
+    			let reportType = $(this).data('report-type');
+    			let fkId = $(this).data('fk-id');
+    			let boardId = $(this).data('board-id');
+    			let content = $('#content').val();
+    			// console.log(reportType);
+    			// console.log(fkId);
+    			// console.log(content);
+    			
+    			// validation
+    			if (!content) {
+    				alert('신고 사유를 작성해주세요.');
+    				return;
+    			}
+    			
+    			formData = new FormData;
+    			formData.append('reportType', reportType);
+    			formData.append('fkId', fkId);
+    			formData.append('boardId', boardId);
+    			formData.append('content', content);
+    			
+    			$.ajax({
+    				type:'POST'
+    				, url:'/report/create'
+    				, data:formData
+    				, processData:false
+	    			, contentType:false
+	    			, enctype:"multipart/form-data"
+	    			, success:function(data) {
+	    				if(data.code == 200) {
+	    					alert('신고 등록이 완료되었습니다.');
+	    					location.href = $('#goBackPostBtn').attr('href');
+	    				} else {
+	    					alert(data.error_message);
+	    				}
+	    			}
+    				, error:function(e) {
+    					alert('신고 등록 중 오류가 발생하였습니다.');
+    				}
+    			});
+    		});
+    	});
+    </script>
+</th:block>

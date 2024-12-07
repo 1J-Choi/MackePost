@@ -95,4 +95,12 @@ public class CommentBO{
 		commentMapper.deleteCommentByPostId(postId);
 		commentMapper.deleteSubCommentByPostId(postId);
 	}
+	
+	public Comment getCommentByFkId(int fkId) {
+		return commentMapper.selectCommentById(fkId);
+	}
+	
+	public SubComment getSubCommentByFkId(int fkId) {
+		return commentMapper.selectSubCommentById(fkId);
+	}
 }

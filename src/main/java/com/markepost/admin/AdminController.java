@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.markepost.board.bo.BoardBO;
 import com.markepost.board.domain.BoardDetailDTO;
+import com.markepost.page.generic.Page;
+import com.markepost.report.bo.ReportBO;
+import com.markepost.report.dto.ReportListDTO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminController {
 	private final BoardBO boardBO;
+	private final ReportBO reportBO;
 	
 	@GetMapping("/board/board-setting-view")
 	public String boardSettingView(
@@ -29,5 +33,17 @@ public class AdminController {
 		}
 		model.addAttribute("boardDetailDTO", boardDetailDTO);
 		return "admin/boardSetting";
+	}
+	
+	@GetMapping("/report/report-list-view")
+	public String reportList(
+			@RequestParam("boardId") int boardId, 
+			@RequestParam(name = "page", defaultValue = "1") int page,
+			Model model) {
+		Page<ReportListDTO> reportListDTOs = reportBO.getReportListDTOs(boardId, page);
+		model.addAttribute("reportListDTOs", reportListDTOs);
+		model.addAttribute("boardId", boardId);
+		
+		return "admin/reportList";
 	}
 }

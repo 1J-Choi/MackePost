@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/defaultLayout}">
+<section layout:fragment="content" class="contents d-flex justify-content-center">
+	<div class="h-90 col-10 my-2">
+		<div class="bg-light shadow rounded my-5 p-3">
+			<h1>신고 목록</h1>
+			<!-- 신고 리스트 출력 -->
+			<div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>신고유형</th>
+							<th><!-- 게시글 제목 or 댓글 내용 --></th>
+							<th>작성자</th>
+							<th>신고자</th>
+							<th>신고일자</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="report : ${reportListDTOs.items}">
+							<td th:text="${report.report.id}"></td>
+							<td>
+								<!-- 게시글 -->
+								<th:block th:if="${report.report.reportType.name() == 'POST'}">
+									게시글
+								</th:block>
+								<!-- 댓글 -->
+								<th:block th:unless="${report.report.reportType.name() == 'POST'}">
+									댓글
+								</th:block>
+							</td>
+							<td>
+								<a th:href="|/admin/report/report-detail-view?reportId=${report.report.id}|" 
+								class="text-dark"><span th:text="${report.text}"></span></a>
+							</td>
+							<td th:text="${report.writeUserName}"></td>
+							<td th:text="${report.reportUserName}"></td>
+							<td th:text="${report.report.createdAt}"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+			<!-- 페이지 버튼 -->
+			<div class="mt-2">
+			  <div class="d-flex justify-content-center">
+        			<a th:if="${reportListDTOs.nowPage > 1}" th:href="@{/admin/report/report-list-view(boardId=${boardId}, page=${reportListDTOs.nowPage - 1})}">Previous</a>
+	    			<span th:text="'Page ' + ${reportListDTOs.nowPage} + ' of ' + ${reportListDTOs.totalPages}" class="mx-3"></span>
+        			<a th:if="${reportListDTOs.nowPage < reportListDTOs.totalPages}" th:href="@{/admin/report/report-list-view(boardId=${boardId}, page=${reportListDTOs.nowPage + 1})}">Next</a>
+    			</div>
+			</div>
+			
+			<!-- 하단 버튼 -->
+			<div class="d-flex justify-content mt-2">
+				<a th:href="|/board/post-list-view?boardId=${boardId}|" 
+				class="btn btn-secondary shadow-sm">게시판으로</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<th:block layout:fragment="script">
+    <script>
+    	
+    </script>
+</th:block>

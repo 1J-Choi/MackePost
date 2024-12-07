@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.markepost.report.mapper.ReportMapper">
+	<insert id="insertReport" 
+	parameterType="com.markepost.report.domain.Report" 
+	useGeneratedKeys="true" 
+	keyProperty="id">
+		INSERT INTO `report`
+		(
+			`fkId`
+			, `reportType`
+			, `boardId`
+			, `userId`
+			, `content`
+			, `createdAt`
+		)
+		VALUES
+		(
+			#{fkId}
+			, #{reportType}
+			, #{boardId}
+			, #{userId}
+			, #{content}
+			, NOW()
+		)
+	</insert>
+	<select id="countByBoardId" 
+	parameterType="int" 
+	resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+			`report`
+		WHERE
+			`boardId` = #{boardId}
+	</select>
+	<select id="findByBoardId" 
+	parameterType="map" 
+	resultType="com.markepost.report.domain.Report">
+		SELECT
+			`id`
+			, `fkId`
+			, `reportType`
+			, `boardId`
+			, `userId`
+			, `content`
+			, `createdAt`
+		FROM
+			`report`
+		WHERE
+			`boardId` = #{boardId}
+		ORDER BY `id` DESC
+		LIMIT #{pageSize}
+		OFFSET #{offset}
+	</select>
+</mapper>

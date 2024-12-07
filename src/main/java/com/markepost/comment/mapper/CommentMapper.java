@@ -25,4 +25,6 @@ public interface CommentMapper {
 	public int updateSubCommentDeleted(int subCommentId);
 	public void deleteCommentByPostId(int postId);
 	public void deleteSubCommentByPostId(int postId);
+	public Comment selectCommentById(int id);
+	public SubComment selectSubCommentById(int id);
 }

@@ -134,7 +134,7 @@
 								<div th:text="${comment.comment.createdAt}" class="text-secondary text-sm mr-1"></div>
 								<!-- 신고 -->
 								<th:block th:if="${session.userId != null} and ${session.userId != comment.comment.userId}">
-									<a th:href="|/report/create?reportType=comment&fkId=${comment.comment.id}|">
+									<a th:href="|/report/create-report-view?reportType=COMMENT&fkId=${comment.comment.id}|">
 										<img src="https://cdn.pixabay.com/photo/2016/03/31/15/15/revolving-light-1293105_1280.png" 
 										alt="신고 이미지" height="18" width="18" class="mr-1">
 									</a>
@@ -190,7 +190,7 @@
 										<div th:text="${subComment.subComment.createdAt}" class="text-secondary text-sm mr-1"></div>
 										<!-- 신고 -->
 										<th:block th:if="${session.userId != null} and ${session.userId != subComment.subComment.userId}">
-											<a th:href="|/report/create?reportType=subComment&fkId=${subComment.subComment.id}|">
+											<a th:href="|/report/create-report-view?reportType=SUBCOMMENT&fkId=${subComment.subComment.id}|">
 												<img src="https://cdn.pixabay.com/photo/2016/03/31/15/15/revolving-light-1293105_1280.png" 
 												alt="신고 이미지" height="18" width="18" class="mr-1">
 											</a>
@@ -247,7 +247,7 @@
 				<div class="d-flex">
 					<!-- 일반 유저일 시 => 신고하기 -->
 					<th:block th:if="${session.userId != null} and ${session.userId != postDetail.post.userId}">
-						<a th:href="|/report/create?reportType=post&fkId=${postDetail.post.id}|" 
+						<a th:href="|/report/create-report-view?reportType=POST&fkId=${postDetail.post.id}|" 
 						class="btn btn-danger shadow-sm">신고하기</a>
 					</th:block>
 					<!-- 글쓴이일 시 => 수정, 삭제 -->
@@ -269,8 +269,7 @@
 		</div>
 		
 		<div class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<!-- modal-dialog-centered: 수직 기준 가운데 -->
-		  <div class="modal-dialog">
+		  <div class="modal-dialog modal-dialog-centered">
 		    <div class="modal-content">
 		    	<div class="modal-header">
         			<h5 class="modal-title">경고</h5>

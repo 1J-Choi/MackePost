@@ -111,4 +111,37 @@
 		WHERE
 			`postId` = #{postId}
 	</delete>
+	<select id="selectCommentById" 
+	parameterType="int" 
+	resultType="com.markepost.comment.domain.Comment">
+		SELECT
+			`id`
+			, `postId`
+			, `userId`
+			, `content`
+			, `isDeleted`
+			, `createdAt`
+			, `updatedAt`
+		FROM
+			`comment`
+		WHERE
+			`id` = #{id}
+	</select>
+	<select id="selectSubCommentById" 
+	parameterType="int" 
+	resultType="com.markepost.comment.domain.SubComment">
+		SELECT
+			`id`
+			, `postId`
+			, `commentId`
+			, `userId`
+			, `content`
+			, `isDeleted`
+			, `createdAt`
+			, `updatedAt`
+		FROM
+			`subComment`
+		WHERE
+			`id` = #{id}
+	</select>
 </mapper>
