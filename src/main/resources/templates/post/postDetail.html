@@ -21,7 +21,7 @@
 					class="rounded bg-orange p-1 mr-2 mb-1 shadow-sm text-dark drag-prevent" th:text="${postDetail.tag.tagName}"></div>
 				</th:block>
 				<!-- 제목 -->
-				<h1><span th:text="${postDetail.post.subject}"></span></h1>
+				<h1 class="text-overflow-auto" th:title="${postDetail.post.subject}"><span th:text="${postDetail.post.subject}"></span></h1>
 				<span th:if="${postDetail.post.createdAt != postDetail.post.updatedAt}" 
 				class="text-secondary">
 				(수정됨)
@@ -437,7 +437,7 @@
     				type:'PATCH'
     				, url:'/comment/delete'
     				, data:{
-    					'commentType':'comment'
+    					'commentType':'COMMENT'
     					, 'id':commentId
     				}
     				, success:function(data) {
@@ -463,7 +463,7 @@
     				type:'PATCH'
     				, url:'/comment/delete'
     				, data:{
-    					'commentType':'subComment'
+    					'commentType':'SUBCOMMENT'
     					, 'id':subCommentId
     				}
     				, success:function(data) {
@@ -486,7 +486,7 @@
     			// console.log(postId);
     			
     			$.ajax({
-    				type:'DELETE'
+    				type:'PATCH'
     				, url:'/post/delete'
     				, data:{
     					'postId':postId

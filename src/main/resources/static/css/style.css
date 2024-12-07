@@ -39,3 +39,31 @@ table {
 .text-line-through {
 	text-decoration: line-through;
 }
+.text-overflow {
+	white-space: nowrap;       /* 텍스트를 한 줄로 유지 */
+    overflow: hidden;          /* 넘치는 텍스트를 숨김 */
+    text-overflow: ellipsis;   /* 줄임표(...)를 표시 */
+    max-width: 200px;          /* 텍스트가 표시될 최대 너비 설정 */
+    display: inline-block;     /* 블록 수준 요소에서 작동 */
+    vertical-align: middle;
+}
+.text-overflow-more {
+	white-space: nowrap;       /* 텍스트를 한 줄로 유지 */
+    overflow: hidden;          /* 넘치는 텍스트를 숨김 */
+    text-overflow: ellipsis;   /* 줄임표(...)를 표시 */
+    max-width: 150px;          /* 텍스트가 표시될 최대 너비 설정 */
+    display: inline-block;     /* 블록 수준 요소에서 작동 */
+    vertical-align: middle;
+}
+.text-overflow-auto {
+	white-space: nowrap;       /* 텍스트를 한 줄로 유지 */
+    overflow: hidden;          /* 넘치는 텍스트를 숨김 */
+    text-overflow: ellipsis;   /* 줄임표(...)를 표시 */
+    max-width: 100%;          /* 텍스트가 표시될 최대 너비 설정 */
+    display: inline-block;     /* 블록 수준 요소에서 작동 */
+    vertical-align: middle;
+}
+.break-word {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}

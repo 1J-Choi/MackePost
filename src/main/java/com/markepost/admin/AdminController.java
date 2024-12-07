@@ -10,6 +10,8 @@ import com.markepost.board.bo.BoardBO;
 import com.markepost.board.domain.BoardDetailDTO;
 import com.markepost.page.generic.Page;
 import com.markepost.report.bo.ReportBO;
+import com.markepost.report.domain.Report;
+import com.markepost.report.dto.ReportDetailDTO;
 import com.markepost.report.dto.ReportListDTO;
 
 import jakarta.servlet.http.HttpSession;
@@ -45,5 +47,16 @@ public class AdminController {
 		model.addAttribute("boardId", boardId);
 		
 		return "admin/reportList";
+	}
+	
+	@GetMapping("/report/report-detail-view")
+	public String reportDetail(
+			@RequestParam("reportId") int reportId, 
+			Model model) {
+		ReportDetailDTO reportDetailDTO = reportBO.getReportDetailDTO(reportId);
+		
+		model.addAttribute("reportDetailDTO", reportDetailDTO);
+		
+		return "admin/reportDetail";
 	}
 }

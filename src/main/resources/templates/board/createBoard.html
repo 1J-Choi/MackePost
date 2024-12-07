@@ -47,6 +47,13 @@
 <th:block layout:fragment="script">
     <script>
     	$(document).ready(function(){
+    		// 이름 변경될 때 중복검사 초기화
+    		$('#name').on('input', function(e) {
+    			$('#nameCheckLength').addClass('d-none');
+    			$('#nameCheckDuplicated').addClass('d-none');
+    			$('#nameCheckOk').addClass('d-none');
+    		});
+    		
     		$('#nameCheckBtn').on('click', function() {
     			$('#nameCheckLength').addClass('d-none');
     			$('#nameCheckDuplicated').addClass('d-none');

@@ -8,7 +8,7 @@
 		<div class="bg-light shadow rounded my-5 p-3">
 			<h1>신고 목록</h1>
 			<!-- 신고 리스트 출력 -->
-			<div>
+			<div class="overflow-auto">
 				<table class="table">
 					<thead>
 						<tr>
@@ -35,7 +35,7 @@
 							</td>
 							<td>
 								<a th:href="|/admin/report/report-detail-view?reportId=${report.report.id}|" 
-								class="text-dark"><span th:text="${report.text}"></span></a>
+								class="text-dark"><span th:text="${report.text}" class="text-overflow-more"></span></a>
 							</td>
 							<td th:text="${report.writeUserName}"></td>
 							<td th:text="${report.reportUserName}"></td>

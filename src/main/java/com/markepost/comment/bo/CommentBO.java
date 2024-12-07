@@ -83,9 +83,9 @@ public class CommentBO{
 	}
 	
 	public int updateCommentDeleted(String commentType, int id) {
-		if(commentType.equals("comment")) { // 댓글 isDeleted 전환
+		if(commentType.equals("COMMENT")) { // 댓글 isDeleted 전환
 			return commentMapper.updateCommentDeleted(id);
-		} else if(commentType.equals("subComment")) {
+		} else if(commentType.equals("SUBCOMMENT")) {
 			return commentMapper.updateSubCommentDeleted(id);
 		}
 		return 0;

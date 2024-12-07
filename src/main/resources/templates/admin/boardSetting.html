@@ -245,6 +245,14 @@
     			});
     		});
     		
+    		// admin 아이디 재입력시 중복확인 초기화
+			$('#adminLoginId').on('input', function(e) {
+				$('#idCheckLength').addClass('d-none');
+    			$('#idCheckNone').addClass('d-none');
+    			$('#idCheckDuplicated').addClass('d-none');
+    			$('#idCheckOk').addClass('d-none');
+    		});
+    		
     		// admin 등록 전 아이디 체크
     		$('#idCheckBtn').on('click', function() {
     			$('#idCheckLength').addClass('d-none');

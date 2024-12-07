@@ -13,6 +13,7 @@ import com.markepost.post.bo.PostBO;
 import com.markepost.post.domain.Post;
 import com.markepost.report.constant.ReportType;
 import com.markepost.report.domain.Report;
+import com.markepost.report.dto.ReportDetailDTO;
 import com.markepost.report.dto.ReportListDTO;
 import com.markepost.report.mapper.ReportMapper;
 import com.markepost.user.bo.UserBO;
@@ -40,6 +41,10 @@ public class ReportBO {
 		reportMapper.insertReport(report);
 		
 		return report;
+	}
+	
+	public int deleteReport(int reportId) {
+		return reportMapper.deleteReportById(reportId);
 	}
 	
 	public Page<ReportListDTO> getReportListDTOs(int boardId, int page) {
@@ -80,5 +85,33 @@ public class ReportBO {
 		}
 		
 		return reportListDTOs;
+	}
+	
+	public ReportDetailDTO getReportDetailDTO(int reportId) {
+		ReportDetailDTO reportDetailDTO = new ReportDetailDTO();
+		Report report = reportMapper.getReportById(reportId);
+		reportDetailDTO.setReport(report);
+		if(report.getReportType().equals(ReportType.POST)) { // 게시글
+			Post post = postBO.getPostById(report.getFkId());
+			reportDetailDTO.setPostId(post.getId());
+			reportDetailDTO.setText(post.getSubject());
+			reportDetailDTO.setWriteUser(userBO.getUserEntityById(post.getUserId()));
+			reportDetailDTO.setBoardId(post.getBoardId());
+		} else if (report.getReportType().equals(ReportType.COMMENT)) { // 댓글
+			Comment comment = commentBO.getCommentByFkId(report.getFkId());
+			reportDetailDTO.setPostId(comment.getPostId());
+			reportDetailDTO.setText(comment.getContent());
+			reportDetailDTO.setWriteUser(userBO.getUserEntityById(comment.getUserId()));
+			reportDetailDTO.setBoardId(postBO.getPostById(comment.getPostId()).getBoardId());
+		} else if (report.getReportType().equals(ReportType.SUBCOMMENT)) { // 대댓글
+			SubComment subComment = commentBO.getSubCommentByFkId(report.getFkId());
+			reportDetailDTO.setPostId(subComment.getPostId());
+			reportDetailDTO.setText(subComment.getContent());
+			reportDetailDTO.setWriteUser(userBO.getUserEntityById(subComment.getUserId()));
+			reportDetailDTO.setBoardId(postBO.getPostById(subComment.getPostId()).getBoardId());
+		}
+		reportDetailDTO.setReportUser(userBO.getUserEntityById(report.getUserId()));
+		
+		return reportDetailDTO;
 	}
 }

@@ -10,6 +10,8 @@ import com.markepost.report.domain.Report;
 @Mapper
 public interface ReportMapper {
 	public void insertReport(Report report);
+	public Report getReportById(int reportId);
+	public int deleteReportById(int reportId);
 	public int countByBoardId(int boardId);
 	public List<Report> findByBoardId(
 			@Param("boardId") int boardId, 

@@ -64,6 +64,19 @@
 <th:block layout:fragment="script">
     <script>
 		$(document).ready(function() {
+			// id 재입력시 중복확인 초기화
+			$('#loginId').on('input', function(e) {
+				$('#idCheckLength').addClass('d-none');
+				$('#idCheckDuplicated').addClass('d-none');
+				$('#idCheckOk').addClass('d-none');
+    		});
+			// email 재입력시 중복확인 초기화
+			$('input[name=email]').on('input', function(e) {
+				$('#emailCheckRule').addClass('d-none');
+				$('#emailCheckDuplicated').addClass('d-none');
+				$('#emailCheckOk').addClass('d-none');
+    		});
+			
 			// 아이디 중복확인
 			$('#loginIdCheckBtn').on('click', function() {
 				// 문구 초기화

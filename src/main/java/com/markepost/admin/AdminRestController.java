@@ -15,6 +15,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.markepost.admin.bo.AdminBO;
 import com.markepost.admin.entity.AdminEntity;
 import com.markepost.board.bo.BoardBO;
+import com.markepost.comment.bo.CommentBO;
+import com.markepost.post.bo.PostBO;
+import com.markepost.report.bo.ReportBO;
+import com.markepost.report.constant.ReportType;
+import com.markepost.suspend.bo.SuspendBO;
+import com.markepost.suspend.constant.SuspendType;
+import com.markepost.suspend.entity.SuspendEntity;
 import com.markepost.tag.bo.TagBO;
 import com.markepost.tag.entity.TagEntity;
 import com.markepost.user.bo.UserBO;
@@ -32,6 +39,10 @@ public class AdminRestController {
 	private final TagBO tagBO;
 	private final UserBO userBO;
 	private final AdminBO adminBO;
+	private final SuspendBO suspendBO;
+	private final PostBO postBO;
+	private final CommentBO commentBO;
+	private final ReportBO reportBO;
 
 	/**
 	 * 게시판 수정
@@ -168,6 +179,66 @@ public class AdminRestController {
 		
 		result.put("code", 200);
 		result.put("result", "성공");
+		return result;
+	}
+	
+	@PostMapping("/suspend/create")
+	public Map<String, Object> createSuspend(
+			@RequestParam("userId") int userId, 
+			@RequestParam("boardId") int boardId,
+			@RequestParam("suspendType") SuspendType suspendType, 
+			@RequestParam("number") int number, 
+			@RequestParam("time") String time, 
+			HttpSession session) {
+		// 현재 접속한 사람이 제재를 주는 admin => 접속자의 id가 admin의 id
+		int adminId = (int) session.getAttribute("userId");
+		
+		SuspendEntity suspendEntity = suspendBO.addSuspend(userId, boardId, suspendType, number, time, adminId);
+		Map<String, Object> result = new HashMap<>();
+		if(suspendEntity != null) {
+			result.put("code", 200);
+			result.put("result", "성공");
+		} else {
+			result.put("code", 400);
+			result.put("result", "제재 적용 중 문제가 발생했습니다.");
+		}
+		return result;
+	}
+	
+	@PatchMapping("/report/delete-post-comment")
+	public Map<String, Object> deletePostComment(
+			@RequestParam("reportType") ReportType reportType, 
+			@RequestParam("fkId") int fkId, 
+			HttpSession session) {
+		int userId = (int) session.getAttribute("userId");
+		
+		if(reportType.equals(ReportType.POST)) { // 게시글
+			postBO.updatePostisDeleted(fkId);
+		} else {
+			commentBO.updateCommentDeleted(reportType.name(), fkId);
+		}
+		Map<String, Object> result = new HashMap<>();
+		result.put("code", 200);
+		result.put("result", "성공");
+		
+		return result;
+	}
+	
+	@DeleteMapping("/report/delete")
+	public Map<String, Object> deleteReport(
+			@RequestParam("reportId") int reportId, 
+			HttpSession session) {
+		int userId = (int) session.getAttribute("userId");
+		
+		int rowCount = reportBO.deleteReport(reportId);
+		Map<String, Object> result = new HashMap<>();
+		if(rowCount > 0) {
+			result.put("code", 200);
+			result.put("result", "성공");
+		} else {
+			result.put("code", 400);
+			result.put("result", "신고 삭제에 실패했습니다.");
+		}
 		return result;
 	}
 }

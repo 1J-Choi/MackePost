@@ -35,7 +35,6 @@ public interface PostMapper {
 			@Param("userId") int userId);
 	public int updatePost(Post post);
 	public int updateMarketPost(MarketPost marketPost);
-	public void deletePost(int postId);
-	public void deleteMarketPost(int postId);
+	public void updatePostIsDeleted(int postId);
 	
 }

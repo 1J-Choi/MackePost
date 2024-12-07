@@ -16,6 +16,7 @@
 			</if>
 			, `subject`
 			, `content`
+			, `isDeleted`
 			, `createdAt`
 			, `updatedAt`
 		)
@@ -28,6 +29,7 @@
 			</if>
 			, #{subject}
 			, #{content}
+			, false
 			, NOW()
 			, NOW()
 		)
@@ -62,6 +64,7 @@
 			`post`
 		WHERE
 			`boardId` = #{boardId}
+			AND `isDeleted` = true
 			<if test="tagId != null">
 			AND `tagId` = #{tagId}
 			</if>
@@ -85,12 +88,14 @@
 			, `tagId`
 			, `subject`
 			, `content`
+			, `isDeleted`
 			, `createdAt`
 			, `updatedAt`
 		FROM
 			`post`
 		WHERE
 			`boardId` = #{boardId}
+			AND `isDeleted` = false
 			<if test="tagId != null">
 			AND `tagId` = #{tagId}
 			</if>
@@ -117,6 +122,7 @@
 			, `tagId`
 			, `subject`
 			, `content`
+			, `isDeleted`
 			, `createdAt`
 			, `updatedAt`
 		FROM
@@ -175,18 +181,13 @@
 		WHERE
 			`postId` = #{postId}
 	</update>
-	<delete id="deletePost" 
+	<update id="updatePostIsDeleted" 
 	parameterType="int">
-		DELETE FROM
+		UPDATE
 			`post`
+		SET
+			`isDeleted` = true
 		WHERE
 			`id` = #{postId}
-	</delete>
-	<delete id="deleteMarketPost" 
-	parameterType="int">
-		DELETE FROM
-			`marketPost`
-		WHERE
-			`postId` = #{postId}
-	</delete>
+	</update>
 </mapper>

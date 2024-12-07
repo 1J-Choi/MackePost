@@ -193,14 +193,14 @@ public class PostRestController {
 		return result;
 	}
 	
-	@DeleteMapping("/delete")
+	@PatchMapping("/delete")
 	public Map<String, Object> deletePost(
 			@RequestParam("postId") int postId, 
 			HttpSession session) {
 		// 접속한 유저에 의한것인지 확인용 (이후에 권한 설정 할 것)
 		int userId = (int) session.getAttribute("userId");
 		
-		postBO.deletePost(postId);
+		postBO.updatePostisDeleted(postId);
 		Map<String, Object> result = new HashMap<>();
 		result.put("code", 200);
 		result.put("result", "성공");

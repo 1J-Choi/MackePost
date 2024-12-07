@@ -53,7 +53,7 @@
 				</div>
 					
 				<!-- 글 목록 -->
-				<div>
+				<div class="overflow-auto">
 					<table class="table">
 						<thead>
 							<tr>
@@ -90,10 +90,10 @@
 										<a th:href="|/post/post-detail-view?postId=${post.postId}|" 
 										class="text-dark">
 											<th:block th:if="${post.isDone}">
-												<span th:text="${post.subject}" class="text-truncate text-secondary text-line-through"></span>
+												<span th:text="${post.subject}" class="text-secondary text-line-through text-overflow"></span>
 											</th:block>
 											<th:block th:unless="${post.isDone}">
-												<span th:text="${post.subject}" class="text-truncate"></span>
+												<span th:text="${post.subject}" class="text-overflow"></span>
 											</th:block>
 											 ♥<span th:text="${post.likeCount}"></span>
 										</a> 

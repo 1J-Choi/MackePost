@@ -54,4 +54,27 @@
 		LIMIT #{pageSize}
 		OFFSET #{offset}
 	</select>
+	<select id="getReportById" 
+	parameterType="int" 
+	resultType="com.markepost.report.domain.Report">
+		SELECT
+			`id`
+			, `fkId`
+			, `reportType`
+			, `boardId`
+			, `userId`
+			, `content`
+			, `createdAt`
+		FROM
+			`report`
+		WHERE
+			`id` = #{reportId}
+	</select>
+	<delete id="deleteReportById" 
+	parameterType="int">
+		DELETE FROM
+			`report`
+		WHERE
+			`id` = #{reportId}
+	</delete>
 </mapper>

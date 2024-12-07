@@ -12,6 +12,7 @@ public class Post {
 	private Integer tagId;
 	private String subject;
 	private String content;
+	private boolean isDeleted;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 }
