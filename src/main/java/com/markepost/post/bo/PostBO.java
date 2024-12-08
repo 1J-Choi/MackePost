@@ -12,6 +12,7 @@ import com.markepost.admin.entity.AdminEntity;
 import com.markepost.board.bo.BoardBO;
 import com.markepost.board.domain.Board;
 import com.markepost.comment.bo.CommentBO;
+import com.markepost.comment.domain.Comment;
 import com.markepost.comment.domain.CommentDTO;
 import com.markepost.common.FileManagerService;
 import com.markepost.image.bo.ImageBO;
@@ -217,6 +218,8 @@ public class PostBO{
 	public void updatePostisDeleted(int postId) {
 		// 실제 삭제가 아닌 isDeleted 값만 true로 
 		postMapper.updatePostIsDeleted(postId);
+		// post가 처리될때 해당 게시글의 댓글도 같이 바꾼다
+		commentBO.deleteCommentsByPostId(postId);
 	}
 	
 	public List<PostTopDTO> getTop5PostList(Integer userId) {

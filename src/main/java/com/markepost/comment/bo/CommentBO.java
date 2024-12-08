@@ -120,4 +120,15 @@ public class CommentBO{
 		
 		return commentTopDTOs;
 	}
+	
+	public void updateCommentDeletedByPostId(int postId) {
+		List<Comment> comments = commentMapper.getCommentListByPostId(postId);
+		List<SubComment> subComments = commentMapper.getSubCommentListByCommentId(postId);
+		for(Comment comment : comments) {
+			commentMapper.updateCommentDeleted(comment.getId());
+		}
+		for(SubComment subComment : subComments) {
+			commentMapper.updateSubCommentDeleted(subComment.getId());
+		}
+	}
 }

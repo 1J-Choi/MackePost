@@ -132,10 +132,7 @@
 		<div class="d-flex justify-content-between">
 			<a th:href="|/board/post-list-view?boardId=${boardDetailDTO.board.id}|" 
 			class="btn btn-secondary">게시판으로</a>
-			<div class="d-flex">
-				<a th:href="|/admin/report/report-list-view?boardId=${boardDetailDTO.board.id}|" class="btn btn-warning mr-1">신고 목록으로</a>
-				<button type="button" id="boardDeleteBtn" class="btn btn-danger">게시판 삭제</button>
-			</div>
+			<a th:href="|/admin/report/report-list-view?boardId=${boardDetailDTO.board.id}|" class="btn btn-warning mr-1">신고 목록으로</a>
 		</div>
 	</div>
 </section>
@@ -360,12 +357,6 @@
 						alert('admin 삭제 중 문제가 발생했습니다.');
 					}
     			});
-    		});
-    		
-    		// 게시판 삭제
-    		$('#boardDeleteBtn').on('click', function() {
-    			alert('게시판을 삭제하면 되돌릴 수 없습니다.\n정말로 삭제하시겠습니까?');
-    			// TODO: 게시판 삭제 기능(딸려있는 admin, post, tag 다 삭제)
     		});
     	});
     </script>
