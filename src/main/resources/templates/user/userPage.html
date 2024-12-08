@@ -51,14 +51,46 @@
 		<!-- 최근 게시글 및 댓글 -->
 		<section class="d-flex h-50">
 			<!-- 최근 게시글 -->
-			<aside class="bg-light rounded mr-2 w-50 p-2 shadow">
+			<aside class="bg-light rounded mr-2 w-50 p-2 shadow overflow-auto">
 				<h2>최근 게시글</h2>
-				<table class="table"></table>
+				<table class="table">
+					<tbody>
+						<tr th:each="post : ${top5PostList}" class="shadow-sm rounded">
+							<td>
+								<span th:text="|(${post.boardName})|" 
+								class="text-secondary small"></span>
+							</td>
+							<td>
+								<a th:href="|/post/post-detail-view?postId=${post.postId}|" class="text-dark">
+									<span th:text="${post.postName}" class="text-overflow font-weight-bold"></span>
+								</a>
+							</td>
+							<td>
+								<span th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd HH:mm')}" 
+								class="small text-secondary"></span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</aside>
 			<!-- 최근 댓글 -->
-			<aside class="bg-light w-50 p-2 shadow">
+			<aside class="bg-light w-50 p-2 shadow overflow-auto">
 				<h2>최근 댓글</h2>
-				<table class="table"></table>
+				<table class="table">
+					<tbody>
+						<tr th:each="comment : ${top5CommentList}" class="shadow-sm rounded">
+							<td>
+								<a th:href="|/post/post-detail-view?postId=${comment.postId}|" class="text-dark">
+									<span th:text="${comment.content}" class="text-overflow font-weight-bold"></span>
+								</a>
+							</td>
+							<td>
+								<span th:text="${#temporals.format(comment.createdAt, 'yyyy.MM.dd HH:mm')}" 
+								class="small text-secondary"></span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</aside>
 		</section>
 	</div>

@@ -97,4 +97,18 @@
 		WHERE
 			`id` = #{boardId}
 	</update>
+	<select id="selectTop5Boards" 
+	resultType="com.markepost.board.domain.Board">
+		SELECT
+			`id`
+			, `name`
+			, `introduce`
+			, `imagePath`
+			, `createdAt`
+			, `updatedAt`
+		FROM
+			`board`
+		ORDER BY `id` DESC
+		LIMIT 5
+	</select>
 </mapper>

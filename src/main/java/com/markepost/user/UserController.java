@@ -1,11 +1,17 @@
 package com.markepost.user;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.markepost.comment.bo.CommentBO;
+import com.markepost.comment.domain.CommentTopDTO;
+import com.markepost.post.bo.PostBO;
+import com.markepost.post.domain.PostTopDTO;
 import com.markepost.user.bo.UserBO;
 import com.markepost.user.entity.UserEntity;
 
@@ -17,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
 	private final UserBO userBO;
+	private final PostBO postBO;
+	private final CommentBO commentBO;
 	
 	@GetMapping("/sign-in-view")
 	public String signInView() {
@@ -49,6 +57,12 @@ public class UserController {
 			return "/user/sign-in-view";
 		}
 		
+		// 최근 게시글, 댓글 5개씩 출력
+		List<PostTopDTO> top5PostList = postBO.getTop5PostList(userId);
+		List<CommentTopDTO> top5CommentList = commentBO.getTop5CommentList(userId);
+				
+		model.addAttribute("top5PostList", top5PostList);
+		model.addAttribute("top5CommentList", top5CommentList);
 		model.addAttribute("user", user);
 		return "/user/userPage";
 	}
@@ -57,6 +71,12 @@ public class UserController {
 	public String userPage(@RequestParam("userId") int userId, Model model) {
 		UserEntity user = userBO.getUserEntityById(userId);
 		
+		// 최근 게시글/댓글 5개씩 출력
+		List<PostTopDTO> top5PostList = postBO.getTop5PostList(userId);
+		List<CommentTopDTO> top5CommentList = commentBO.getTop5CommentList(userId);
+				
+		model.addAttribute("top5PostList", top5PostList);
+		model.addAttribute("top5CommentList", top5CommentList);
 		model.addAttribute("user", user);
 		return "/user/userPage";
 	}

@@ -27,4 +27,8 @@ public interface CommentMapper {
 	public void deleteSubCommentByPostId(int postId);
 	public Comment selectCommentById(int id);
 	public SubComment selectSubCommentById(int id);
+	// 사실 Comment와 SubComment 2개의 테이블에서 받아오는 것이지만
+	// SubComment의 CommentId값을 빼고 조회할 것이며
+	// 이는 Comment의 구조와 일치함으로 List<Comment>로 받는다.
+	public List<Comment> selectCommentTopListByUserId(Integer userId);
 }

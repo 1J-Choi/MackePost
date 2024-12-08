@@ -21,4 +21,5 @@ public interface BoardMapper {
 			@Param("boardId")int boardId, 
 			@Param("introduce") String introduce, 
 			@Param("imagePath") String imagePath);
+	public List<Board> selectTop5Boards();
 }

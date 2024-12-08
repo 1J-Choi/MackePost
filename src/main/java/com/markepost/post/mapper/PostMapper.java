@@ -36,5 +36,5 @@ public interface PostMapper {
 	public int updatePost(Post post);
 	public int updateMarketPost(MarketPost marketPost);
 	public void updatePostIsDeleted(int postId);
-	
+	public List<Post> getTop5PostList(Integer userId);
 }

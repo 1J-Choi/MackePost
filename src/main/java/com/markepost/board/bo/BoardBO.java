@@ -14,6 +14,8 @@ import com.markepost.board.domain.BoardDetailDTO;
 import com.markepost.board.domain.SearchBoardDTO;
 import com.markepost.board.mapper.BoardMapper;
 import com.markepost.common.FileManagerService;
+import com.markepost.post.bo.PostBO;
+import com.markepost.post.domain.Post;
 import com.markepost.tag.bo.TagBO;
 import com.markepost.tag.constant.TagType;
 import com.markepost.tag.entity.TagEntity;
@@ -133,5 +135,32 @@ public class BoardBO {
 		
 		//DB update
 		return boardMapper.updateBoardByPostId(boardId, introduce, imagePath);
+	}
+	
+	public List<SearchBoardDTO> getTop5BoardList() {
+		List<SearchBoardDTO> top5BoardList = new ArrayList<>();
+		List<Board> top5Boards = boardMapper.selectTop5Boards();
+		for(Board board : top5Boards) {
+			SearchBoardDTO searchBoardDTO = new SearchBoardDTO();
+			searchBoardDTO.setBoard(board);
+			
+			// 인게임,실물 거래 태그 유무 찾기
+			searchBoardDTO.setHasIngameTag(false);
+			searchBoardDTO.setHasRealTag(false);
+			List<TagEntity> tags = tagBO.getTagListByBoardId(board.getId());
+			for(TagEntity tag : tags) {
+				if (tag.getTagType().equals(TagType.INGAME)) {
+					searchBoardDTO.setHasIngameTag(true);
+					continue;
+				}
+				if (tag.getTagType().equals(TagType.REAL)) {
+					searchBoardDTO.setHasRealTag(true);
+					continue;
+				}
+			}
+			top5BoardList.add(searchBoardDTO);
+		}
+		
+		return top5BoardList;
 	}
 }

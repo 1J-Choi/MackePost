@@ -9,6 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.markepost.admin.bo.AdminBO;
 import com.markepost.admin.entity.AdminEntity;
+import com.markepost.board.bo.BoardBO;
+import com.markepost.board.domain.Board;
 import com.markepost.comment.bo.CommentBO;
 import com.markepost.comment.domain.CommentDTO;
 import com.markepost.common.FileManagerService;
@@ -20,6 +22,7 @@ import com.markepost.post.domain.MarketPost;
 import com.markepost.post.domain.Post;
 import com.markepost.post.domain.PostDetailDTO;
 import com.markepost.post.domain.PostSearchDTO;
+import com.markepost.post.domain.PostTopDTO;
 import com.markepost.post.domain.PostUpdateDTO;
 import com.markepost.post.mapper.PostMapper;
 import com.markepost.tag.bo.TagBO;
@@ -41,6 +44,7 @@ public class PostBO{
 	private final TagBO tagBO;
 	private final LikeBO likeBO;
 	private final CommentBO commentBO;
+	private final BoardBO boardBO;
 	
 	public Post getPostById(int postId) {
 		return postMapper.selectPostById(postId);
@@ -213,5 +217,22 @@ public class PostBO{
 	public void updatePostisDeleted(int postId) {
 		// 실제 삭제가 아닌 isDeleted 값만 true로 
 		postMapper.updatePostIsDeleted(postId);
+	}
+	
+	public List<PostTopDTO> getTop5PostList(Integer userId) {
+		List<PostTopDTO> top5PostList = new ArrayList<>();
+		List<Post> posts = postMapper.getTop5PostList(userId);
+		for (Post post : posts) {
+			PostTopDTO postTopDTO = new PostTopDTO();
+			postTopDTO.setPostId(post.getId());
+			postTopDTO.setPostName(post.getSubject());
+			Board board = boardBO.getBoardById(post.getBoardId());
+			postTopDTO.setBoardName(board.getName());
+			postTopDTO.setCreatedAt(post.getCreatedAt());
+			
+			top5PostList.add(postTopDTO);
+		}
+		
+		return top5PostList;
 	}
 }

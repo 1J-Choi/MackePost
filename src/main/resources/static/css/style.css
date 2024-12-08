@@ -67,3 +67,6 @@ table {
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
+.main-title {
+	background-color: #D9D9D9;
+}

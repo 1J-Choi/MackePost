@@ -144,4 +144,40 @@
 		WHERE
 			`id` = #{id}
 	</select>
+	<select id="selectCommentTopListByUserId" 
+	parameterType="Integer" 
+	resultType="com.markepost.comment.domain.Comment">
+		SELECT
+		    `id`
+		    , `postId`
+		    , `userId`
+		    , `content`
+		    , `createdAt`
+		FROM
+		    `comment`
+		WHERE
+		    `isDeleted` = false
+		    <if test="userId != null">
+		    AND `userId` = #{userId}
+		    </if>
+		<!-- UNION ALL을 통해 두 테이블의 SELECT 데이터들을 합친다-->    
+		UNION ALL
+		
+		SELECT
+		    `id`
+		    , `postId`
+		    , `userId`
+		    , `content`
+		    , `createdAt`
+		FROM
+		    `subComment`
+		WHERE
+		    `isDeleted` = false
+		    <if test="userId != null">
+			AND `userId` = #{userId}
+			</if>
+		ORDER BY
+		    `createdAt` DESC
+		LIMIT 5
+	</select>
 </mapper>

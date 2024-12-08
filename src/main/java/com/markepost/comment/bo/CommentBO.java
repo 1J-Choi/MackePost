@@ -12,6 +12,7 @@ import com.markepost.board.bo.BoardBO;
 import com.markepost.board.domain.Board;
 import com.markepost.comment.domain.Comment;
 import com.markepost.comment.domain.CommentDTO;
+import com.markepost.comment.domain.CommentTopDTO;
 import com.markepost.comment.domain.SubComment;
 import com.markepost.comment.domain.SubCommentDTO;
 import com.markepost.comment.mapper.CommentMapper;
@@ -102,5 +103,21 @@ public class CommentBO{
 	
 	public SubComment getSubCommentByFkId(int fkId) {
 		return commentMapper.selectSubCommentById(fkId);
+	}
+	
+	public List<CommentTopDTO> getTop5CommentList(Integer userId) {
+		List<CommentTopDTO> commentTopDTOs = new ArrayList<>();
+		// Comment와 SubComment중에서 userId가 같고 가장 최근인 5개 가져오기
+		List<Comment> comments = commentMapper.selectCommentTopListByUserId(userId);
+		for(Comment comment: comments) {
+			CommentTopDTO commentTopDTO = new CommentTopDTO();
+			commentTopDTO.setContent(comment.getContent());
+			commentTopDTO.setPostId(comment.getPostId());
+			commentTopDTO.setCreatedAt(comment.getCreatedAt());
+			
+			commentTopDTOs.add(commentTopDTO);
+		}
+		
+		return commentTopDTOs;
 	}
 }

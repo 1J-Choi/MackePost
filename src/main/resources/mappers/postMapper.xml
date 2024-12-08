@@ -190,4 +190,27 @@
 		WHERE
 			`id` = #{postId}
 	</update>
+	<select id="getTop5PostList" 
+	parameterType="Integer" 
+	resultType="com.markepost.post.domain.Post">
+		SELECT
+			`id`
+			, `boardId`
+			, `userId`
+			, `tagId`
+			, `subject`
+			, `content`
+			, `isDeleted`
+			, `createdAt`
+			, `updatedAt`
+		FROM
+			`post`
+		WHERE
+			`isDeleted` = false
+		<if test="userId != null">
+			AND `userId` = #{userId}
+		</if>
+		ORDER BY `id` DESC
+		LIMIT 5
+	</select>
 </mapper>
