@@ -27,7 +27,6 @@ import com.markepost.tag.entity.TagEntity;
 import com.markepost.user.bo.UserBO;
 import com.markepost.user.entity.UserEntity;
 
-import groovy.lang.Delegate;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 

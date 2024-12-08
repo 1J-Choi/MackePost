@@ -55,4 +55,9 @@ public class SuspendBO {
 		
 		return suspendRepository.save(suspend);
 	}
+	
+	public SuspendEntity getSuspend(int userId, int boardId, SuspendType suspendType){
+		return suspendRepository.findByUserIdAndBoardIdAndSuspendType(
+				userId, boardId, suspendType).orElse(null);
+	}
 }

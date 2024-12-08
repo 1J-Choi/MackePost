@@ -1,5 +1,6 @@
 package com.markepost.post;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,12 @@ import com.markepost.image.entity.ImageEntity;
 import com.markepost.post.bo.PostBO;
 import com.markepost.post.domain.MarketPost;
 import com.markepost.post.domain.Post;
+import com.markepost.report.bo.ReportBO;
+import com.markepost.report.constant.ReportType;
+import com.markepost.report.domain.Report;
+import com.markepost.suspend.bo.SuspendBO;
+import com.markepost.suspend.constant.SuspendType;
+import com.markepost.suspend.entity.SuspendEntity;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 public class PostRestController {
 	private final PostBO postBO;
 	private final ImageBO imageBO;
+	private final SuspendBO suspendBO;
 	
 	/**
 	 * 일반글 업로드
@@ -53,6 +61,17 @@ public class PostRestController {
 		
 		Map<String, Object> result = new HashMap<>();
 		// 게시판 정지 유저일 경우 return
+		SuspendEntity suspend = suspendBO.getSuspend(userId, boardId, SuspendType.POST);
+		LocalDateTime now = LocalDateTime.now();
+		if(suspend != null && suspend.getUntillTime().compareTo(now) > 0 ) {
+			// suspend.getUntillTime().compareTo(now)
+			// suspend.getUntillTime() 가 now 보다 이후일 시 => 1
+			// true가 되면 untillTime(정지 마감기간) 안이다!
+			result.put("code", 200);
+			result.put("error_message", "현재 게시글 작성 정지 상태입니다.");
+			result.put("untilTime", suspend.getUntillTime());
+			return result;
+		}
 		
 		// db insert
 		Post post = postBO.addNormalPost(boardId, tagId, subject, content, files, userId, userLoginId);
@@ -97,6 +116,17 @@ public class PostRestController {
 		
 		Map<String, Object> result = new HashMap<>();
 		// 게시판 정지 유저일 경우 return
+		SuspendEntity suspend = suspendBO.getSuspend(userId, boardId, SuspendType.POST);
+		LocalDateTime now = LocalDateTime.now();
+		if(suspend != null && suspend.getUntillTime().compareTo(now) > 0 ) {
+			// suspend.getUntillTime().compareTo(now)
+			// suspend.getUntillTime() 가 now 보다 이후일 시 => 1
+			// true가 되면 untillTime(정지 마감기간) 안이다!
+			result.put("code", 200);
+			result.put("error_message", "현재 게시글 작성 정지 상태입니다.");
+			result.put("untilTime", suspend.getUntillTime());
+			return result;
+		}
 		
 		// db insert
 		Post post = postBO.addMarketPost(

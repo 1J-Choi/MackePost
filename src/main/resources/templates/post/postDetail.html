@@ -366,11 +366,13 @@
     				}
     				, success:function(data) {
     					if(data.code == 200) {
-    						location.reload(true);
-    					} else if(data.code == 403) {
-    						alert(error_message + '\n정지기간: ' + untilTime);
+    						if(data.untilTime != null) {
+        						alert(data.error_message + '\n정지기간: ' + data.untilTime);
+        					} else {
+    							location.reload(true);
+        					}
     					} else {
-    						alert(error_message);
+    						alert(data.error_message);
     					}
     				}
     				, error:function(e) {
@@ -414,9 +416,11 @@
     				}
     				,success:function(data) {
     					if(data.code == 200) {
-    						location.reload(true);
-    					} else if(data.code == 403) {
-    						alert(error_message + '\n정지기간: ' + untilTime);
+    						if(data.untilTime != null) {
+        						alert(data.error_message + '\n정지기간: ' + data.untilTime);
+        					} else {
+    							location.reload(true);
+        					}
     					} else {
     						alert(data.error_message);
     					}
