@@ -12,9 +12,9 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 public class EmailConfig {
 	
 	// 유저명과 앱 비밀번호 세팅
-	@Value("$(spring.mail.username)")
+	@Value("${spring.mail.username}")
 	private String username;
-	@Value("$(spring.mail.password)")
+	@Value("${spring.mail.password}")
 	private String password;
 	
 	@Bean

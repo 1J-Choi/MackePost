@@ -54,7 +54,7 @@ public class UserController {
 		UserEntity user = userBO.getUserEntityById(userId);
 		
 		if(user == null) {
-			return "/user/sign-in-view";
+			return "user/sign-in-view";
 		}
 		
 		// 최근 게시글, 댓글 5개씩 출력
@@ -64,7 +64,7 @@ public class UserController {
 		model.addAttribute("top5PostList", top5PostList);
 		model.addAttribute("top5CommentList", top5CommentList);
 		model.addAttribute("user", user);
-		return "/user/userPage";
+		return "user/userPage";
 	}
 	
 	@GetMapping("/userpage-view")
@@ -78,7 +78,7 @@ public class UserController {
 		model.addAttribute("top5PostList", top5PostList);
 		model.addAttribute("top5CommentList", top5CommentList);
 		model.addAttribute("user", user);
-		return "/user/userPage";
+		return "user/userPage";
 	}
 	
 	@GetMapping("/user-update-view")
@@ -88,10 +88,19 @@ public class UserController {
 		UserEntity user = userBO.getUserEntityById(userId);
 		
 		if(user == null) {
-			return "/user/sign-in-view";
+			return "user/sign-in-view";
 		}
 		
 		model.addAttribute("user", user);
-		return "/user/userUpdate";
+		return "user/userUpdate";
+	}
+	
+	@GetMapping("/confirm-view")
+	public String confirmView(HttpSession session, Model model) {
+		int userId = (int) session.getAttribute("userId");
+		String email = userBO.getUserEntityById(userId).getEmail();
+		
+		model.addAttribute("email", email);
+		return "user/confirmView";
 	}
 }

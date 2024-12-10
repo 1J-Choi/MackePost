@@ -42,7 +42,7 @@
 				</th:block>
 				<th:block th:unless="${user.isConfirmed} == true">
 					<h3 class="text-danger">인증되지 않은 유저입니다.</h3>
-					<button type="button" id="confirmUserBtn" class="btn btn-primary shadow">인증하기</button>
+					<a href="/user/confirm-view" class="btn btn-primary shadow">인증하기</a>
 				</th:block>
 			</div>
 		</div>

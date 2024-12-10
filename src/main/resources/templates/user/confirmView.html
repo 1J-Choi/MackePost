@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/defaultLayout}">
+<section layout:fragment="content" class="contents d-flex justify-content-center">
+	<div class="h-90 col-10 my-2">
+		<div class="bg-light shadow rounded my-5 p-3">
+			<h1>본인 인증</h1>
+			<div class="mt-3 ml-2">
+				<h4 th:text="|회원가입 시 입력한 이메일(${email})으로 인증코드가 발급됩니다.|"></h4>
+			</div>
+			
+			<!-- 인증코드 발급 및 입력 창 -->
+			<div class="input-group my-3">
+				<div class="input-group-prepand">
+					<button type="button" id="createConfirmCodeBtn" class="btn btn-success">인증코드 발급</button>
+				</div>
+				<input type="text" id="confirmCode" class="form-control" placeholder="인증코드를 입력하세요">
+				<div class="input-group-append">
+					<button type="button" id="validationBtn" class="btn btn-primary">인증하기</button>
+				</div>
+			</div>
+			
+			<!-- 코드에 따른 안내 -->
+			<div>
+				<div id="codeInputNone" class="small text-danger d-none">인증코드를 입력하세요.</div>
+				<div id="codeCheckLength" class="small text-danger d-none">인증코드는 10자리 입니다.</div>
+				<div id="codeNoExist" class="small text-danger d-none">인증코드가 발급되지 않았습니다.</div>
+				<div id="codeWrong" class="small text-danger d-none">발급된 인증코드와 일치하지 않습니다.</div>
+			</div>
+			
+			<!-- 빨간색 주의사항 -->
+			<div class="mt-3 ml-2">
+				<span class="h4 text-danger"># 인증코드는 발급된 후 10분 내로 입력해야합니다.
+				<br>인증코드를 재발급 받고 싶으시다면 발급 버튼을 다시 눌러주세요.</span>
+			</div>
+			
+			<!-- 마이페이지 돌아가기 버튼 -->
+			<div class="d-flex jusitfy-content-start mt-3">
+				<a href="/user/mypage-view" class="btn btn-secondary shadow-sm">마이페이지</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<th:block layout:fragment="script">
+    <script>
+    	$(document).ready(function() {
+    		// 인증코드 발급
+    		$('#createConfirmCodeBtn').on('click', function() {
+    			$.ajax({
+    				type:'POST'
+    				, url:'/user/confirm/create'
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						alert('인증코드가 발송되었습니다.');
+    					} else {
+    						alert(data.error_message);
+    					}
+    				}
+    				, error:function(e) {
+    					alert('인증코드 발송 중 오류가 발생했습니다.');
+    				}
+    			});
+    		});
+    		
+    		// 인증코드 input 값 바뀔 시 안내 초기화
+    		$('#confirmCode').on('input', function() {
+    			$('#codeInputNone').addClass('d-none');
+    			$('#codeCheckLength').addClass('d-none');
+    			$('#codeNoExist').addClass('d-none');
+    			$('#codeWrong').addClass('d-none');
+    		});
+    		
+    		// 인증코드 인증 요청
+    		$('#validationBtn').on('click', function() {
+    			// 안내 초기화
+    			$('#codeInputNone').addClass('d-none');
+    			$('#codeCheckLength').addClass('d-none');
+    			$('#codeNoExist').addClass('d-none');
+    			$('#codeWrong').addClass('d-none');
+    			
+    			let confirmCode = $('#confirmCode').val();
+    			// alert(confirmCode);
+    			
+    			// validation
+    			if (!confirmCode) {
+    				$('#codeInputNone').removeClass('d-none');
+    				return;
+    			}
+    			if (confirmCode.length < 10) {
+    				$('#codeCheckLength').removeClass('d-none');
+    				return;
+    			}
+    			// alert('통과!');
+    			
+    			// ajax
+    			
+    			$.ajax({
+    				type:'POST'
+    				, url:'/user/confirm/validate'
+    				, data:{
+    					'confirmCode':confirmCode
+    				}
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						alert('인증에 성공했습니다!');
+    						location.href = '/user/mypage-view';
+    					} else {
+    						if(data.code == 400) {
+    							if(data.error_message == 'no_confirmCode_exist') {
+    								$('#codeNoExist').removeClass('d-none');
+    							} else if (data.error_message == 'worng_confirmCode') {
+    								$('#codeWrong').removeClass('d-none');
+    							} else {
+    								alert(data.error_message);
+    							}
+    						} else {
+    							alert(data.error_message);
+    						}
+    					}
+    				}
+    				, error:function(e) {
+    					alert('본인인증 코드 확인 중 오류가 발생했습니다.');
+    				}
+    			});
+    		});
+    	});
+    </script>
+</th:block>

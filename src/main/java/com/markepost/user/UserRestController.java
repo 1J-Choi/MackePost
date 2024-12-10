@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.markepost.confirm.bo.ConfirmBO;
+import com.markepost.confirm.entity.ConfirmEntity;
 import com.markepost.user.bo.UserBO;
 import com.markepost.user.entity.UserEntity;
 
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserRestController {
 	private final UserBO userBO;
+	private final ConfirmBO confirmBO;
 	
 	/**
 	 * 아이디 중복 확인
@@ -101,6 +104,13 @@ public class UserRestController {
 		return result;
 	}
 	
+	/**
+	 * 로그인
+	 * @param loginId
+	 * @param password
+	 * @param request
+	 * @return
+	 */
 	@PostMapping("/sign-in")
 	public Map<String, Object> signIn(
 			@RequestParam("loginId") String loginId,
@@ -127,6 +137,15 @@ public class UserRestController {
 		return result;
 	}
 	
+	
+	/**
+	 * 유저 정보 수정
+	 * @param name
+	 * @param introduce
+	 * @param file
+	 * @param session
+	 * @return
+	 */
 	@PatchMapping("/update")
 	public Map<String, Object> userUpdate(
 			@RequestParam("name") String name,
@@ -150,6 +169,23 @@ public class UserRestController {
 			result.put("code", 500);
 			result.put("error_message", "정보가 수정되지 않았습니다.");
 		}
+		return result;
+	}
+	
+	@PostMapping("/confirm/create")
+	public Map<String, Object> createConfirm(HttpSession session) {
+		int userId = (int) session.getAttribute("userId");
+		
+		ConfirmEntity confirm = confirmBO.addConfirm(userId);
+		Map<String, Object> result = new HashMap<>();
+		if(confirm != null) {
+			result.put("code", 200);
+			result.put("result", "성공");
+		} else {
+			result.put("code", 400);
+			result.put("error_message", "인증코드 발급 중 문제가 발생했습니다.");
+		}
+		
 		return result;
 	}
 }
