@@ -172,6 +172,11 @@ public class UserRestController {
 		return result;
 	}
 	
+	/**
+	 * 인증번호 발급
+	 * @param session
+	 * @return
+	 */
 	@PostMapping("/confirm/create")
 	public Map<String, Object> createConfirm(HttpSession session) {
 		int userId = (int) session.getAttribute("userId");
@@ -184,6 +189,31 @@ public class UserRestController {
 		} else {
 			result.put("code", 400);
 			result.put("error_message", "인증코드 발급 중 문제가 발생했습니다.");
+		}
+		
+		return result;
+	}
+	
+	@PostMapping("/confirm/validate")
+	public Map<String, Object> validateConfirm(
+			@RequestParam("confirmCode") String confirmCode, 
+			HttpSession session) {
+		int userId = (int) session.getAttribute("userId");
+		
+		ConfirmEntity confirm = confirmBO.getConfirm(userId);
+		Map<String, Object> result = new HashMap<>();
+		if(confirm == null) { // 인증코드 발급 안됨
+			result.put("code", 400);
+			result.put("error_message", "no_confirmCode_exist");
+		} else if (!confirm.getConfirmCode().equals(confirmCode)) {
+			// 인증코드 불일치
+			result.put("code", 400);
+			result.put("error_message", "worng_confirmCode");
+		} else if (confirm.getConfirmCode().equals(confirmCode)) {
+			// 인증코드 일치 => 성공
+			userBO.updateUserConfirm(userId);
+			result.put("code", 200);
+			result.put("result", "성공");
 		}
 		
 		return result;

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.markepost.common.MailService;
 import com.markepost.confirm.entity.ConfirmEntity;
@@ -16,10 +17,15 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ConfirmBO {
 	private final ConfirmRepository confirmRepository;
 	private final UserBO userBO;
 	private final MailService mailService;
+	
+	public ConfirmEntity getConfirm(int userId) {
+		return confirmRepository.findById(userId).orElse(null);
+	}
 	
 	public ConfirmEntity addConfirm(int userId) {
 		// 이미 인증코드가 존재한다면 삭제하기
@@ -52,5 +58,10 @@ public class ConfirmBO {
 				.build();
 		
 		return confirmRepository.save(newConfirm);
+	}
+	
+	public int deleteOldConfirm() {
+		LocalDateTime limitTime = LocalDateTime.now().minusMinutes(10);
+        return confirmRepository.deleteByCreatedAtBefore(limitTime);
 	}
 }

@@ -82,4 +82,15 @@ public class UserBO {
 	public List<UserEntity> getUserListByLikeName(String name) {
 		return userRepository.findByNameLike("%" + name + "%");
 	}
+	
+	public void updateUserConfirm(int userId) {
+		UserEntity user = userRepository.findById(userId).orElse(null);
+		
+		if(user != null) {
+			UserEntity updateUser = user.toBuilder()
+					.isConfirmed(true)
+					.build();
+			userRepository.save(updateUser);
+		}
+	}
 }

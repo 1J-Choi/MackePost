@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.markepost.comment.bo.CommentBO;
 import com.markepost.comment.domain.CommentTopDTO;
@@ -96,8 +97,17 @@ public class UserController {
 	}
 	
 	@GetMapping("/confirm-view")
-	public String confirmView(HttpSession session, Model model) {
+	public String confirmView(HttpSession session, Model model, 
+			RedirectAttributes redirectAttributes) {
 		int userId = (int) session.getAttribute("userId");
+		
+		// 이미 인증된 유저의 접근 차단
+		UserEntity user = userBO.getUserEntityById(userId);
+		if(user.isConfirmed()) {
+			redirectAttributes.addFlashAttribute("suspendMessage", "이미 인증이 완료된 유저입니다.");
+			return "redirect:/suspend/suspendView";
+		}
+		
 		String email = userBO.getUserEntityById(userId).getEmail();
 		
 		model.addAttribute("email", email);

@@ -46,7 +46,7 @@ public class MailService {
 		MimeMessage message = javaMailSender.createMimeMessage();
 		try {
 			MimeMessageHelper helper = new MimeMessageHelper(message, true, "utf-8");
-			helper.setFrom(userName); // 보내는 주소
+			helper.setFrom(userName, "MarkePost"); // 보내는 주소
 			helper.setTo(toMail); // 받는 주소
 			helper.setSubject(title); // 메일 제목
 			helper.setText(content, true); // 메일 내용, html:true

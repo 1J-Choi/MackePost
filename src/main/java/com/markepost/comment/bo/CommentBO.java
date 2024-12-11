@@ -50,6 +50,7 @@ public class CommentBO{
 			UserEntity user = userBO.getUserEntityById(comment.getUserId());
 			commentDTO.setComment(comment);
 			commentDTO.setUserName(user.getName());
+			commentDTO.setComfirmed(user.isConfirmed());
 			Board board = boardBO.getBoardById(post.getBoardId());
 			AdminEntity userAdmin = adminBO.getAdminEntityById(board.getId(), user.getId());
 			if(userAdmin == null) {
@@ -66,6 +67,7 @@ public class CommentBO{
 				UserEntity subUser = userBO.getUserEntityById(subComment.getUserId());
 				subCommentDTO.setSubComment(subComment);
 				subCommentDTO.setUserName(subUser.getName());
+				subCommentDTO.setComfirmed(subUser.isConfirmed());
 				AdminEntity subUserAdmin = adminBO.getAdminEntityById(board.getId(), subUser.getId());
 				if(subUserAdmin == null) {
 					subCommentDTO.setAdmin(false);
