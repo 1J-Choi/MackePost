@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.markepost.common.MailService;
+import com.markepost.common.RandomService;
 import com.markepost.confirm.entity.ConfirmEntity;
 import com.markepost.confirm.repository.ConfirmRepository;
 import com.markepost.user.bo.UserBO;
@@ -22,6 +23,7 @@ public class ConfirmBO {
 	private final ConfirmRepository confirmRepository;
 	private final UserBO userBO;
 	private final MailService mailService;
+	private final RandomService randomService;
 	
 	public ConfirmEntity getConfirm(int userId) {
 		return confirmRepository.findById(userId).orElse(null);
@@ -44,7 +46,7 @@ public class ConfirmBO {
         String number = "0123456789";
         // 랜덤을 생성할 대상 문자열 만든 뒤 전송
         String data = eng_lower + eng_upper + number;
-		String confirmCode = mailService.createRandCode(data, 10);
+		String confirmCode = randomService.createRandCode(data, 10);
 		
 		// 해당 데이터를 바탕으로 메일 보내기
 		String content = mailService.createConfirmMailContent(user.getName(), confirmCode);

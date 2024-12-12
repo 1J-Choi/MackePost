@@ -20,7 +20,7 @@
 						<option>100000</option>
 					</select>
 				</div>
-				<input type="number" id="amount" class="form-control">
+				<input type="number" id="amount" class="form-control bg-white">
 				<div class="input-group-append">
 					<span class="input-group-text">원</span>
 					<button type="button" id="paymentBtn" class="btn btn-success">충전하기</button>
@@ -54,6 +54,27 @@
     		// 결재 요청
     		$('#paymentBtn').on('click', function() {
     			let amount = $('#amount').val();
+    			// console.log(amount);
+    			
+    			// AJAX
+    			$.ajax({
+    				type:'POST'
+    				, url:'/point/create-pay'
+    				, data:{
+    					'amount':amount
+    				}
+    				, success:function(data) {
+    					if(data.code == 200) {
+    						alert('결재 정보 저장 성공!');
+    						// TODO: tossPayment 시작하기
+    					} else {
+    						alert(data.error_message);
+    					}
+    				}
+    				, error:function(e) {
+    					alert('포인트 결재 중 오류가 발생했습니다.');
+    				}
+    			});
     		});
     	});
     </script>

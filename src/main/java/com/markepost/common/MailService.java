@@ -23,24 +23,6 @@ public class MailService {
 	@Value("${spring.mail.username}")
 	private String userName;
 	
-	// 인증용 랜덤 코드 만들기
-	public String createRandCode(String data, int stringLength) {
-		SecureRandom r = new SecureRandom();
-		
-		if (stringLength < 1) {
-			throw new IllegalArgumentException("length must be a positive number.");
-		}
-		
-        StringBuilder sb = new StringBuilder(stringLength);
-        for (int i = 0; i < stringLength; i++) {
-            sb.append( data.charAt(
-            		r.nextInt(data.length())
-            		));
-        }
-        
-        return sb.toString();
-	}
-	
 	// 이메일 전송하기
 	public void mailSend(String toMail, String title, String content) {
 		MimeMessage message = javaMailSender.createMimeMessage();
