@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ConfirmTask {
 	private final ConfirmBO confirmBO;
 	
-	@Scheduled(cron = "0 */10 * * * *") // 매 10분마다
+	@Scheduled(cron = "0 */1 * * * *") // 매 1분마다
 	public void deleteConfirmCode() {
 		int deleteCount = confirmBO.deleteOldConfirm();
 		log.info("##########" + deleteCount

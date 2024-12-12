@@ -30,16 +30,25 @@
 				<!-- 기본 정보 -->
 				<div class="mt-5 py-2">
 					<div class="text-left">
-						<div class="d-flex">
+						<div class="d-flex align-items-center">
 							<h2 th:text="${user.name}"></h2>
-							<img th:if="${user.isConfirmed}" src="/img/confirmed.png" height="18" width="18">
+							<img th:if="${user.isConfirmed}" src="/img/confirmed.png" height="20" width="20">
 						</div>
 						<h4 th:text="|(${user.loginId})|" class="text-light"></h4>
 						<th:block th:if="${user.introduce} != null">
-							<span th:text="${user.introduce}"></span>
+							<span th:text="${user.introduce}" class="font-weight-bolder"></span>
 						</th:block>
 					</div>
 				</div>
+				
+				<!-- 포인트 잔액 및 충전버튼 -->
+				<div class="d-flex justify-content-between mt-5" th:if="${session.userId == user.id} and ${user.point != null}">
+					<div>
+						<span th:text="|잔액: ${user.point.point}원|" class="font-weight-bold"></span>
+					</div>
+					<a href="/point/pay-point-view" class="btn btn-success shadow-sm">충전하기</a>
+				</div>
+				
 				<!-- 로그아웃 버튼 -->
 				<div class="d-flex justify-content-end mt-5">
 					<th:block th:if="${session.userId} == ${user.id}">

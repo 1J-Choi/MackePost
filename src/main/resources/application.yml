@@ -2,7 +2,9 @@ server:
   port: 80
 spring:
   config:
-    import: application-mail.yml
+    import:
+      - application-mail.yml
+      - application-toss.yml
   thymeleaf:
     cache: false
   datasource:

@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.markepost.confirm.bo.ConfirmBO;
 import com.markepost.confirm.entity.ConfirmEntity;
+import com.markepost.point.bo.PointBO;
 import com.markepost.user.bo.UserBO;
 import com.markepost.user.entity.UserEntity;
 
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class UserRestController {
 	private final UserBO userBO;
 	private final ConfirmBO confirmBO;
+	private final PointBO pointBO;
 	
 	/**
 	 * 아이디 중복 확인
@@ -212,6 +214,7 @@ public class UserRestController {
 		} else if (confirm.getConfirmCode().equals(confirmCode)) {
 			// 인증코드 일치 => 성공
 			userBO.updateUserConfirm(userId);
+			pointBO.createPoint(userId);
 			result.put("code", 200);
 			result.put("result", "성공");
 		}

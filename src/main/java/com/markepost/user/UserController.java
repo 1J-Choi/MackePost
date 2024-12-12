@@ -14,6 +14,7 @@ import com.markepost.comment.domain.CommentTopDTO;
 import com.markepost.post.bo.PostBO;
 import com.markepost.post.domain.PostTopDTO;
 import com.markepost.user.bo.UserBO;
+import com.markepost.user.dto.UserInfoDTO;
 import com.markepost.user.entity.UserEntity;
 
 import jakarta.servlet.http.HttpSession;
@@ -52,7 +53,7 @@ public class UserController {
 	public String mypage(HttpSession session, Model model) {
 		int userId = (int) session.getAttribute("userId");
 		
-		UserEntity user = userBO.getUserEntityById(userId);
+		UserInfoDTO user = userBO.getUserInfoDTO(userId);
 		
 		if(user == null) {
 			return "user/sign-in-view";
@@ -70,7 +71,7 @@ public class UserController {
 	
 	@GetMapping("/userpage-view")
 	public String userPage(@RequestParam("userId") int userId, Model model) {
-		UserEntity user = userBO.getUserEntityById(userId);
+		UserInfoDTO user = userBO.getUserInfoDTO(userId);
 		
 		// 최근 게시글/댓글 5개씩 출력
 		List<PostTopDTO> top5PostList = postBO.getTop5PostList(userId);

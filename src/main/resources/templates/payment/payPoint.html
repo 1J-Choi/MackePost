@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/defaultLayout}">
+<section layout:fragment="content" class="contents d-flex justify-content-center">
+	<div class="h-90 col-10 my-2">
+		<div class="bg-light shadow rounded my-5 p-3">
+			<h1>포인트 충전</h1>
+			
+			<!-- 충전 금액 설정 및 실행 버튼 -->
+			<div class="mt-5 input-group px-2">
+				<div class="input-group-prepand">
+					<select class="form-control" id="amountSelect">
+						<option value="">직접입력</option>
+						<option>1000</option>
+						<option>5000</option>
+						<option>10000</option>
+						<option>50000</option>
+						<option>100000</option>
+					</select>
+				</div>
+				<input type="number" id="amount" class="form-control">
+				<div class="input-group-append">
+					<span class="input-group-text">원</span>
+					<button type="button" id="paymentBtn" class="btn btn-success">충전하기</button>
+				</div>
+			</div>
+			
+			<!-- 하단 버튼 -->
+			<div class="mt-5 d-flex justify-content-start">
+				<a href="/user/mypage-view" class="btn btn-secondary shadow-sm">마이페이지</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<th:block layout:fragment="script">
+    <script>
+    	$(document).ready(function() {
+    		// select에 따른 input 변경
+    		$('#amountSelect').on('change', function() {
+    			let selectValue = $(this).val();
+    			
+    			if(selectValue === "") { // 직접입력
+    				$('#amount').val('');
+    				$('#amount').prop('readonly', false);
+    			} else { // 정해진 값
+    				$('#amount').val(selectValue);
+    				$('#amount').prop('readonly', true);
+    			}
+    		});
+    		
+    		// 결재 요청
+    		$('#paymentBtn').on('click', function() {
+    			let amount = $('#amount').val();
+    		});
+    	});
+    </script>
+</th:block>

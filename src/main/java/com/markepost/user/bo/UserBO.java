@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.markepost.common.FileManagerService;
+import com.markepost.point.bo.PointBO;
+import com.markepost.point.entity.PointEntity;
+import com.markepost.user.dto.UserInfoDTO;
 import com.markepost.user.entity.UserEntity;
 import com.markepost.user.repository.UserRepository;
 
@@ -21,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserBO {
 	private final UserRepository userRepository;
 	private final FileManagerService fileManager;
+	private final PointBO pointBO;
 	
 	public UserEntity getUserEntityByLoginId(String loginId) {
 		return userRepository.findByLoginId(loginId);
@@ -92,5 +96,22 @@ public class UserBO {
 					.build();
 			userRepository.save(updateUser);
 		}
+	}
+	
+	public UserInfoDTO getUserInfoDTO(Integer userId) {
+		UserInfoDTO userInfoDTO = new UserInfoDTO();
+		UserEntity user = userRepository.findById(userId).orElse(null);
+		
+		userInfoDTO.setId(user.getId());
+		userInfoDTO.setLoginId(user.getLoginId());
+		userInfoDTO.setName(user.getName());
+		userInfoDTO.setIntroduce(user.getIntroduce());
+		userInfoDTO.setImagePath(user.getImagePath());
+		userInfoDTO.setConfirmed(user.isConfirmed());
+		// setPoint 해주기
+		PointEntity point = pointBO.getPointEntityByuserId(user.getId());
+		userInfoDTO.setPoint(point);
+		
+		return userInfoDTO;
 	}
 }

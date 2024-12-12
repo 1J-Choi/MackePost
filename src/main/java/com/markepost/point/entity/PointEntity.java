@@ -1,8 +1,9 @@
-package com.markepost.confirm.entity;
+package com.markepost.point.entity;
 
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,24 +13,30 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
+@Table(name = "point")
 @Entity
-@Table(name = "confirm")
 @Getter
-@Builder
-@AllArgsConstructor
+@Builder(toBuilder = true)
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
-public class ConfirmEntity {
+@Setter
+public class PointEntity {
+	
 	@Id
 	@Column(name = "userId")
 	private int userId;
 	
-	@Column(name = "confirmCode")
-	private String confirmCode;
+	private int point;
 	
 	@Column(name = "createdAt")
 	@CreationTimestamp
 	private LocalDateTime createdAt;
+	
+	@Column(name = "updatedAt")
+	@UpdateTimestamp
+	private LocalDateTime updatedAt;
 }
