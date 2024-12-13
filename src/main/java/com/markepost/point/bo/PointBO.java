@@ -30,4 +30,16 @@ public class PointBO {
 		
 		return pointRepository.save(point);
 	}
+	
+	public int addAmount(int userId, int amount) {
+		PointEntity point = getPointEntityByuserId(userId);
+		int nowPoint = point.getPoint();
+		
+		point = point.toBuilder()
+				.point(nowPoint + amount)
+				.updatedAt(LocalDateTime.now())
+				.build();
+		pointRepository.save(point);
+		return point.getPoint();
+	}
 }

@@ -36,6 +36,7 @@ public class PointRestController {
 		if(pay != null) {
 			result.put("code", 200);
 			result.put("orderId", pay.getOrderId());
+			result.put("payId", pay.getId());
 			result.put("result", "성공");
 		} else {
 			result.put("code", 400);

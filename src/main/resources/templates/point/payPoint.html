@@ -38,6 +38,9 @@
 <th:block layout:fragment="script">
     <script>
     	$(document).ready(function() {
+    		const clientKey = 'test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq';
+    		const customerKey = "dABYaib76-XIwFgdlA30u";
+    		
     		// select에 따른 input 변경
     		$('#amountSelect').on('change', function() {
     			let selectValue = $(this).val();
@@ -53,8 +56,17 @@
     		
     		// 결재 요청
     		$('#paymentBtn').on('click', function() {
-    			let amount = $('#amount').val();
+    			let amount = Number($('#amount').val());
     			// console.log(amount);
+    			let email = '[[${user.email}]]';
+    			let name = '[[${user.name}]]';
+    			
+    			// validation
+    			
+    			if (isNaN(amount) || amount <= 0) {
+    				alert('올바른 금액을 입력해주세요.');
+    				return;
+  				}
     			
     			// AJAX
     			$.ajax({
@@ -67,6 +79,29 @@
     					if(data.code == 200) {
     						alert('결재 정보 저장 성공!');
     						// TODO: tossPayment 시작하기
+    						let tossPayments = TossPayments(clientKey);
+    						let payment = tossPayments.payment({ customerKey });
+    						payment.requestPayment({
+    					          method: "CARD" // 카드 결제
+    					          , amount: {
+    					            currency:'KRW'
+    					            , value:amount
+    					          }
+    					          , orderId: data.orderId // 고유 주분번호
+    					          , orderName: amount + " 포인트 결재"
+    					          , successUrl: window.location.origin + "/point/create/success?payId=" + data.payId // 결제 요청이 성공하면 리다이렉트되는 URL
+    					          , failUrl: window.location.origin + "/point/create/fail?payId=" + data.payId // 결제 요청이 실패하면 리다이렉트되는 URL
+    					          , customerEmail: email
+    					          , customerName: name
+    					          , customerMobilePhone: "01012341234"
+    					          // 카드 결제에 필요한 정보
+    					          , card: {
+    					            useEscrow: false
+    					            , flowMode: "DEFAULT" // 통합결제창 여는 옵션
+    					            , useCardPoint: false
+    					            , useAppCardOnly: false
+    					          }
+    					        });
     					} else {
     						alert(data.error_message);
     					}

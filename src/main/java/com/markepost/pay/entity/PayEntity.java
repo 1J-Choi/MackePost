@@ -24,7 +24,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "pay")
 @Getter
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
