@@ -47,8 +47,7 @@ public class PayBO {
 		
 		// 기존 결재 요청과 맞는 정보인지 체크
 		if(!pay.getOrderId().equals(orderId) || pay.getAmount() != amount
-				|| pay.getPayStatus() == PayStatus.SUCCESS 
-				|| pay.getPayStatus() == PayStatus.FAIL) {
+				|| pay.getPayStatus() != PayStatus.REQUEST) {
 			// 해당 조건을 해당할시 아래 과정 진행하지 않고 나가버림
 			return -1;
 		}
