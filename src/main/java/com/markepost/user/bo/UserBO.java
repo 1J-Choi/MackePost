@@ -46,6 +46,9 @@ public class UserBO {
 	
 	public UserEntity getUser(String loginId, String password) {
 		UserEntity user = userRepository.findByLoginId(loginId);
+		if(user == null) {
+			return null;
+		}
 		
 		if (!BCrypt.checkpw(password, user.getPassword())) {
 			return null;
