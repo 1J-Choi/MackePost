@@ -1,11 +1,13 @@
 package com.markepost.pay.bo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.markepost.common.RandomService;
+import com.markepost.page.generic.Page;
 import com.markepost.pay.constant.PayStatus;
 import com.markepost.pay.entity.PayEntity;
 import com.markepost.pay.repository.PayRepository;
@@ -67,5 +69,17 @@ public class PayBO {
 				.payStatus(PayStatus.FAIL)
 				.build();
 		payRepository.save(pay);
+	}
+	
+	public Page<PayEntity> getPayPageByUserId(int userId, int page) {
+		Page<PayEntity> payPage = new Page<>();
+		payPage.setPageSize(5);
+		payPage.setNowPage(page);
+		payPage.setTotalCount(payRepository.countByUserId(userId));
+		List<PayEntity> payList = payRepository.findPayListByUserId(
+				userId, payPage.getPageSize(), payPage.getOffset());
+		payPage.setItems(payList);
+		
+		return payPage;
 	}
 }

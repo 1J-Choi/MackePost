@@ -26,11 +26,61 @@
 					<button type="button" id="paymentBtn" class="btn btn-success">충전하기</button>
 				</div>
 			</div>
+			<!-- 결재 내역 보기 -->
+			<div class="d-flex justify-content-end mt-2 mr-2">
+				<a href="#" class="text-secondary" id="payListBtn" data-toggle="modal" data-target=".modal">결재내역 보기</a>
+			</div>
 			
 			<!-- 하단 버튼 -->
 			<div class="mt-5 d-flex justify-content-start">
 				<a href="/user/mypage-view" class="btn btn-secondary shadow-sm">마이페이지</a>
 			</div>
+		</div>
+		
+		<!-- 모달창 -->
+		<div class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered">
+		    <div class="modal-content">
+		    	<div class="modal-header">
+        			<h5 class="modal-title">결재 내역</h5>
+        			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          				<span aria-hidden="true">&times;</span>
+        			</button>
+      			</div>
+      			<div class="modal-body">
+      				<div id="payList">
+	        			<!-- 결재 내역 리스트 나올 부분 -->
+	        			<table class="table text-center">
+	        				<thead>
+	        					<tr>
+	        						<th>No.</th>
+	        						<th>금액</th>
+	        						<th>결재상태</th>
+	        						<th>생성일</th>
+	        					</tr>
+	        				</thead>
+	        				<tbody>
+	        					<tr th:each="pay : ${payPage.items}">
+	        						<td th:text="${pay.id}"></td>
+	        						<td th:text="${pay.amount}"></td>
+	        						<td>
+	        							<span th:class="${pay.payStatus.getTextColor()}" 
+	        							th:text="${pay.payStatus.getStatusText()}"></span>
+	        						</td>
+	        						<td th:text="${#temporals.format(pay.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+	        					</tr>
+	        				</tbody>
+	        			</table>
+					    <div class="d-flex justify-content-center my-2">
+					    	<!-- 페이지 기능 -->
+					    	<a th:if="${payPage.nowPage > 1}" id="prevBtn" class="text-primary drag-prevent">Previous</a>
+						    <span th:text="'Page ' + ${payPage.nowPage} + ' of ' + ${payPage.totalPages}" class="mx-3"></span>
+					        <a th:if="${payPage.nowPage < payPage.totalPages}" id="nextBtn" class="text-primary drag-prevent">Next</a>
+			      		</div>
+      				</div>
+      			</div>
+		    </div>
+		  </div>
 		</div>
 	</div>
 </section>
@@ -110,6 +160,43 @@
     					alert('포인트 결재 중 오류가 발생했습니다.');
     				}
     			});
+    		});
+    		
+    		// 결재내역 보기 a 태그 기본기능 없애기
+    		$('#payListBtn').on('click', function(e) {
+    			e.preventDefault();
+    		});
+    		
+    		let page = [[${payPage.nowPage}]];
+    		
+    		function pageMove() {
+    			$.ajax({
+    				type:'GET'
+    				, url:'/point/pay-list-view'
+    				, data:{
+    					'page':page
+    				}
+    				, success:function(response) {
+    					$('#payList').html(response);
+    				}
+    				, error:function(e) {
+    					alert('결재 리스트 출력 중 오류가 발생했습니다.');
+    				}
+    			});
+    		}
+    		
+    		// 이전 버튼
+    		$(document).on('click', '#prevBtn', function(e) {
+    			page--;
+    			// console.log(page);
+    			pageMove();
+    		});
+    		
+    		// 이후 버튼
+    		$(document).on('click', '#nextBtn', function(e) {
+    			page++;
+    			// console.log(page);
+    			pageMove();
     		});
     	});
     </script>
