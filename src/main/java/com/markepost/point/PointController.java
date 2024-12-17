@@ -14,6 +14,7 @@ import com.markepost.page.generic.Page;
 import com.markepost.pay.bo.PayBO;
 import com.markepost.pay.entity.PayEntity;
 import com.markepost.point.bo.PointBO;
+import com.markepost.point.entity.PointEntity;
 import com.markepost.user.bo.UserBO;
 import com.markepost.user.entity.UserEntity;
 
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class PointController {
 	private final UserBO userBO;
 	private final PayBO payBO;
+	private final PointBO pointBO;
 	
 	@Value("${payment.toss.test_client_api_key}")
 	private String clientKey;
@@ -35,10 +37,12 @@ public class PointController {
 		int userId = (int) session.getAttribute("userId");
 		UserEntity user = userBO.getUserEntityById(userId);
 		Page<PayEntity> payPage = payBO.getPayPageByUserId(userId, 1);
+		PointEntity point = pointBO.getPointEntityByuserId(userId);
 		
 		model.addAttribute("user", user);
 		model.addAttribute("clientKey", clientKey);
 		model.addAttribute("payPage", payPage);
+		model.addAttribute("customerKey", point.getCustomerKey());
 		
 		return "point/payPoint";
 	}

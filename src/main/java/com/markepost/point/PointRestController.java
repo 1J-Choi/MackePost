@@ -59,7 +59,6 @@ public class PointRestController {
 		String response = "<table class=\"table text-center\">"
 				+ "<thead>"
 				+ "<tr>"
-				+ "<th>No.</th>"
 				+ "<th>금액</th>"
 				+ "<th>결재상태</th>"
 				+ "<th>생성일</th>"
@@ -69,8 +68,7 @@ public class PointRestController {
 				+ "<tr>";
 		// payList 세팅
 		for(PayEntity pay : payPage.getItems()) {
-			response = response + "<td>" + pay.getId() + "</td>" 
-					+ "<td>" + pay.getAmount() + "</td>"
+			response = response + "<td>" + pay.getAmount() + "</td>"
 					+ "<td><span class='" + pay.getPayStatus().getTextColor() + "'>" + pay.getPayStatus().getStatusText() + "</span></td>"
 					+ "<td>" + pay.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + "</td>"
 					+ "</tr>";

@@ -32,6 +32,9 @@ public class PointEntity {
 	
 	private int point;
 	
+	@Column(name = "customerKey")
+	private String customerKey;
+	
 	@Column(name = "createdAt")
 	@CreationTimestamp
 	private LocalDateTime createdAt;
