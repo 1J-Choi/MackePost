@@ -74,7 +74,7 @@ public class CommentBO{
 					subCommentDTO.setMain(false);
 				} else {
 					subCommentDTO.setAdmin(true);
-					subCommentDTO.setMain(userAdmin.isAdminType());
+					subCommentDTO.setMain(subUserAdmin.isAdminType());
 				}
 				subCommentList.add(subCommentDTO);
 			}
