@@ -18,7 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FileManagerService {
 	// 실제 업로드 된 이미지가 저장될 서버 경로
-	public static final String FILE_UPLOAD_PATH = "C:\\Users\\최원제\\Desktop\\WJ\\공부\\코딩\\백엔드\\학원\\신보람\\7_개인_프로젝트\\markepost\\markepost_workspace\\images/";
+	//public static final String FILE_UPLOAD_PATH = "C:\\Users\\최원제\\Desktop\\WJ\\공부\\코딩\\백엔드\\학원\\신보람\\7_개인_프로젝트\\markepost\\markepost_workspace\\images/";
+	public final static String FILE_UPLOAD_PATH = "/home/ec2-user/images/";
 	
 	// input: MultipartFile, userLoginId
 		// output: String(이미지 경로)
