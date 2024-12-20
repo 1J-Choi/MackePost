@@ -1,0 +1,34 @@
+services:
+  db:
+    image: mysql:5.7
+    container_name: spring-mysql
+    ports:
+      - 3306:3306  # DB 포트가 3306인 경우 둘 다 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: "1234"    # DB 비밀번호 확인
+      MYSQL_DATABASE: "markepost"  # DB명 확인
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - myapp_network
+
+  application:
+    container_name: myapp-test
+    image: 1jchoi/myapp # 아까 생성한 이미지명 확인
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    volumes:
+      - upload_volumes:/home/ec2-user/images
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/markepost?characterEncoding=UTF-8 # DB명 확인, 3307이었어도 3306인 것 주의
+    networks:
+      - myapp_network
+
+volumes: # 외부 저장소
+  upload_volumes:
+  mysql_data:
+
+networks: # 컨테이너 연결
+  myapp_network:
