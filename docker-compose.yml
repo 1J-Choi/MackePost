@@ -3,7 +3,7 @@ services:
     image: mysql:5.7
     container_name: spring-mysql
     ports:
-      - 3306:3306  # DB 포트가 3306인 경우 둘 다 3306
+      - 3304:3306  # 외부:내부
     environment:
       MYSQL_ROOT_PASSWORD: "1234"    # DB 비밀번호 확인
       MYSQL_DATABASE: "markepost"  # DB명 확인
@@ -16,7 +16,7 @@ services:
     container_name: myapp-test
     image: 1jchoi/myapp # 아까 생성한 이미지명 확인
     ports:
-      - "8080:8080"
+      - "8080:8080" # 외부:내부
     depends_on:
       - db
     volumes:
