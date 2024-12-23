@@ -61,6 +61,7 @@ public class PostController {
 			@RequestParam("postId") int postId, Model model) {
 		PostUpdateDTO postUpdateDTO = postBO.getPostUpdateDTO(postId);
 		
+		
 		model.addAttribute("postUpdateDTO", postUpdateDTO);
 		
 		return "post/updatePost";
