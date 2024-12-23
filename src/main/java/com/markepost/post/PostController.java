@@ -14,6 +14,8 @@ import com.markepost.post.bo.PostBO;
 import com.markepost.post.domain.Post;
 import com.markepost.post.domain.PostDetailDTO;
 import com.markepost.post.domain.PostUpdateDTO;
+import com.markepost.suspend.bo.SuspendBO;
+import com.markepost.suspend.entity.SuspendEntity;
 import com.markepost.tag.bo.TagBO;
 import com.markepost.tag.domain.PostTagDTO;
 import com.markepost.tag.entity.TagEntity;
@@ -28,6 +30,7 @@ public class PostController {
 	private final TagBO tagBO;
 	private final BoardBO boardBO;
 	private final PostBO postBO;
+	private final SuspendBO suspendBO;
 	
 	@GetMapping("/create-post-view")
 	public String createPost(
