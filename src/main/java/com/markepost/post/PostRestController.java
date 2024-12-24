@@ -26,12 +26,16 @@ import com.markepost.suspend.bo.SuspendBO;
 import com.markepost.suspend.constant.SuspendType;
 import com.markepost.suspend.entity.SuspendEntity;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/post")
 @RequiredArgsConstructor
+@Tag(name = "Post API", description = "게시글 관련 API")
 public class PostRestController {
 	private final PostBO postBO;
 	private final ImageBO imageBO;
@@ -47,12 +51,19 @@ public class PostRestController {
 	 * @param session
 	 * @return
 	 */
+	@Operation(summary = "일반글 등록", 
+			description = "일반글 입력값을 받아 글을 등록합니다. (게시글 작성 정지 상태일시 차단)")
 	@PostMapping("/create-normal")
 	public Map<String, Object> createNormalPost(
+			@Parameter(description = "등록할 게시판 ID")
 			@RequestParam("boardId") int boardId, 
+			@Parameter(description = "게시글의 태그 ID (없을 시 0으로 받음)")
 			@RequestParam("tagId") int tagId, 
-			@RequestParam("subject") String subject, 
+			@Parameter(description = "게시글의 제목")
+			@RequestParam("subject") String subject,
+			@Parameter(description = "게시글의 내용")
 			@RequestParam("content") String content,
+			@Parameter(description = "게시글 첨부 이미지", required = false)
 			@RequestParam(value = "files", required = false) List<MultipartFile> files,
 			HttpSession session) {
 		// session 에서 userId, userLoginId 추출
@@ -100,14 +111,23 @@ public class PostRestController {
 	 * @param session
 	 * @return
 	 */
+	@Operation(summary = "거래글 등록", 
+			description = "거래글 입력값을 받아 글을 등록합니다. (게시글 작성 정지 상태일시 차단)")
 	@PostMapping("/create-market")
 	public Map<String, Object> createMarketPost(
+			@Parameter(description = "등록할 게시판 ID")
 			@RequestParam("boardId") int boardId, 
+			@Parameter(description = "게시글의 태그 ID (거래글의 경우 태그가 필수)")
 			@RequestParam("tagId") int tagId, 
+			@Parameter(description = "게시글의 제목")
 			@RequestParam("subject") String subject,
+			@Parameter(description = "상품명")
 			@RequestParam("itemName") String itemName,
+			@Parameter(description = "가격", required = false)
 			@RequestParam(value = "price", required = false) Integer price,
+			@Parameter(description = "상품 설명")
 			@RequestParam("content") String content,
+			@Parameter(description = "게시글 첨부 이미지", required = false)
 			@RequestParam(value = "files", required = false) List<MultipartFile> files,
 			HttpSession session) {
 		// session 에서 userId, userLoginId 추출
@@ -152,8 +172,11 @@ public class PostRestController {
 	 * @param session
 	 * @return
 	 */
+	@Operation(summary = "거래완료 처리", 
+			description = "작성자가 거래글을 거래 완료 처리합니다.")
 	@PatchMapping("/market-end")
 	public Map<String, Object> marketEnd(
+			@Parameter(description = "게시글 ID")
 			@RequestParam("postId") int postId, 
 			HttpSession session) {
 		int userId = (int) session.getAttribute("userId");
@@ -182,13 +205,21 @@ public class PostRestController {
 	 * @param session
 	 * @return
 	 */
+	@Operation(summary = "게시글 수정", 
+			description = "입력받은 값을 바탕으로 일반글or거래글의 내용을 수정합니다.")
 	@PatchMapping("/update")
 	public Map<String, Object> updatePost(
-			@RequestParam("postId") int postId, 
+			@Parameter(description = "게시글 ID")
+			@RequestParam("postId") int postId,
+			@Parameter(description = "게시글 제목")
 			@RequestParam("subject") String subject, 
+			@Parameter(description = "게시글 내용 (거래글일 시 상품 설명)")
 			@RequestParam("content") String content, 
+			@Parameter(description = "게시글 이미지", required = false)
 			@RequestParam(name = "files", required = false) List<MultipartFile> files, 
+			@Parameter(description = "상품명", required = false)
 			@RequestParam(name = "itemName", required = false) String itemName, 
+			@Parameter(description = "가격", required = false)
 			@RequestParam(name = "price", required = false) Integer price, 
 			HttpSession session) {
 		String userLoginId = (String) session.getAttribute("userLoginId");
@@ -223,8 +254,11 @@ public class PostRestController {
 		return result;
 	}
 	
+	@Operation(summary = "게시글 삭제", 
+			description = "게시글을 삭제 상태로 전환하고 화면에서 노출되지 않게합니다.")
 	@PatchMapping("/delete")
 	public Map<String, Object> deletePost(
+			@Parameter(description = "게시글 ID")
 			@RequestParam("postId") int postId, 
 			HttpSession session) {
 		// 접속한 유저에 의한것인지 확인용 (이후에 권한 설정 할 것)

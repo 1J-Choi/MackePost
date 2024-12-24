@@ -17,18 +17,25 @@ import com.markepost.pay.constant.PayStatus;
 import com.markepost.pay.entity.PayEntity;
 import com.markepost.point.bo.PointBO;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/point")
 @RequiredArgsConstructor
+@Tag(name = "Point API", description = "포인트 관련 API")
 public class PointRestController {
 	private final PointBO pointBO;
 	private final PayBO payBO;
 	
 	@PostMapping("/create-pay") 
+	@Operation(summary = "결재 정보 저장", 
+	description = "tossPayments에서 사용될 결재 금액 정보를 받고, orderId를 생성한 뒤 저장 및 반환합니다.")
 	public Map<String, Object> createPay(
+			@Parameter(description = "결재 금액")
 			@RequestParam("amount") int amount, 
 			HttpSession session) {
 		int userId = (int) session.getAttribute("userId");
@@ -50,7 +57,10 @@ public class PointRestController {
 	}
 	
 	@GetMapping("/pay-list-view")
+	@Operation(summary = "결재 내역 출력", 
+	description = "결재 내역 리스트의 태그를 String으로 반환하며 page 값에 따라 5개씩 출력합니다.")
 	public String payList(
+			@Parameter(description = "현재 페이지")
 			@RequestParam(value = "page", defaultValue = "1") int page, 
 			HttpSession session) {
 		int userId = (int) session.getAttribute("userId");

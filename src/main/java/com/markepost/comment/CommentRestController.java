@@ -17,12 +17,16 @@ import com.markepost.suspend.bo.SuspendBO;
 import com.markepost.suspend.constant.SuspendType;
 import com.markepost.suspend.entity.SuspendEntity;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/comment")
 @RequiredArgsConstructor
+@Tag(name = "Comment API", description = "댓글 관련 API")
 public class CommentRestController {
 	private final CommentBO commentBO;
 	private final SuspendBO suspendBO;
@@ -37,9 +41,14 @@ public class CommentRestController {
 	 * @return
 	 */
 	@PostMapping("/create")
+	@Operation(summary = "(대)댓글 등록", 
+	description = "입력값을 바탕으로 댓글을 등록하며 upperCommentId가 있을 시 대댓글로 등록합니다.")
 	public Map<String, Object> createComment(
+			@Parameter(description = "게시글 ID")
 			@RequestParam("postId") int postId, 
-			@RequestParam("content") String content, 
+			@Parameter(description = "댓글 내용")
+			@RequestParam("content") String content,
+			@Parameter(description = "상위 댓글 ID", required = false)
 			@RequestParam(name = "upperCommentId", required = false) Integer upperCommentId, 
 			HttpSession session) {
 		int userId = (int) session.getAttribute("userId");
@@ -70,8 +79,12 @@ public class CommentRestController {
 	}
 	
 	@PatchMapping("/delete")
+	@Operation(summary = "(대)댓글 삭제", 
+	description = "commentType를 바탕으로 댓글/대댓글을 구분하여 이를 삭제합니다.")
 	public Map<String, Object> deleteComment(
+			@Parameter(description = "댓글 타입 (COMMENT, SUBCOMMENT)")
 			@RequestParam("commentType")String commentType, 
+			@Parameter(description = "(대)댓글 ID")
 			@RequestParam("id") int id) {
 		int rowCount = commentBO.updateCommentDeleted(commentType, id);
 		
