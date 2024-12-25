@@ -22,12 +22,16 @@ import com.markepost.post.domain.PostSearchDTO;
 import com.markepost.user.bo.UserBO;
 import com.markepost.user.entity.UserEntity;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/board")
 @RequiredArgsConstructor
+@Tag(name = "Board API", description = "게시판 관련 API")
 public class BoardRestController {
 	private final BoardBO boardBO;
 	private final UserBO userBO;
@@ -39,7 +43,10 @@ public class BoardRestController {
 	 * @return
 	 */
 	@GetMapping("/is-duplicate-name")
+	@Operation(summary = "게시판 이름 중복 확인", 
+	description = "입력받은 게시판 이름이 이미 존재하는 게시판들의 이름과 중복되는지 확인힙니다. 이후 중복 여부 결과를 boolean을 반환합니다.")
 	public Map<String, Object> duplicateName(
+			@Parameter(description = "입력받은 게시판 이름")
 			@RequestParam("name") String name) {
 		Board board = boardBO.getBoardByName(name);
 		
@@ -65,9 +72,14 @@ public class BoardRestController {
 	 * @return
 	 */
 	@PostMapping("/create")
+	@Operation(summary = "게시판 생성", 
+	description = "입력받은 값들을 바탕으로 게시판을 생성합니다.")
 	public Map<String, Object> createBoard(
+			@Parameter(description = "게시판 이름")
 			@RequestParam("name") String name,
+			@Parameter(description = "게시판 소개")
 			@RequestParam("introduce") String introduce,
+			@Parameter(description = "게시판 아이콘 이미지 (1개)", required = false)
 			@RequestParam(value = "file", required = false) MultipartFile file,
 			HttpSession session) {
 		// session 에서 userId(로그인 상태 확인용) 추출

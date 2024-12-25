@@ -42,7 +42,7 @@ public class CommentRestController {
 	 */
 	@PostMapping("/create")
 	@Operation(summary = "(대)댓글 등록", 
-	description = "입력값을 바탕으로 댓글을 등록하며 upperCommentId가 있을 시 대댓글로 등록합니다.")
+	description = "입력값을 바탕으로 댓글을 등록하며 upperCommentId가 있을 시 대댓글로 등록합니다. (댓글 작성 정시 상태일 시 차단)")
 	public Map<String, Object> createComment(
 			@Parameter(description = "게시글 ID")
 			@RequestParam("postId") int postId, 

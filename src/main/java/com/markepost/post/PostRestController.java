@@ -28,6 +28,7 @@ import com.markepost.suspend.entity.SuspendEntity;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +53,7 @@ public class PostRestController {
 	 * @return
 	 */
 	@Operation(summary = "일반글 등록", 
-			description = "일반글 입력값을 받아 글을 등록합니다. (게시글 작성 정지 상태일시 차단)")
+			description = "일반글 입력값을 받아 글을 등록합니다. (게시글 작성 정지 상태일 시 차단)")
 	@PostMapping("/create-normal")
 	public Map<String, Object> createNormalPost(
 			@Parameter(description = "등록할 게시판 ID")
