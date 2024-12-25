@@ -11,16 +11,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.markepost.like.bo.LikeBO;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Like API", description = "좋아요 관련 API")
 public class LikeRestController {
 	private final LikeBO likeBO;
 	
+	@Operation(summary = "좋아요 토글", 
+			description = "입력받은 게시글 아이디와 session의 userId를 바탕으로 좋아요를 생성하거나 제거합니다.")
 	@GetMapping("/like/{postId}")
 	public Map<String, Object> likeToggle(
+			@Parameter(description = "게시글 ID")
 			@PathVariable(name = "postId") int postId, 
 			HttpSession session) {
 		Map<String, Object> result = new HashMap<>();
