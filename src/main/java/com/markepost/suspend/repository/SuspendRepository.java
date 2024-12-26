@@ -8,6 +8,6 @@ import com.markepost.suspend.constant.SuspendType;
 import com.markepost.suspend.entity.SuspendEntity;
 
 public interface SuspendRepository extends JpaRepository<SuspendEntity, Integer>{
-	public Optional<SuspendEntity> findFirstByUserIdAndBoardIdAndSuspendTypeOrderByCreatedAtDesc(
+	public Optional<SuspendEntity> findFirstByUserIdAndBoardIdAndSuspendTypeOrderByUntillTimeDesc(
 			int userId, int boardId, SuspendType suspendType);
 }

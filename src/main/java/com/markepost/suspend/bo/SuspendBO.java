@@ -57,7 +57,7 @@ public class SuspendBO {
 	}
 	
 	public SuspendEntity getSuspend(int userId, int boardId, SuspendType suspendType){
-		return suspendRepository.findFirstByUserIdAndBoardIdAndSuspendTypeOrderByCreatedAtDesc(
+		return suspendRepository.findFirstByUserIdAndBoardIdAndSuspendTypeOrderByUntillTimeDesc(
 				userId, boardId, suspendType).orElse(null);
 	}
 }
