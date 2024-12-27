@@ -64,7 +64,7 @@
 			`post`
 		WHERE
 			`boardId` = #{boardId}
-			AND `isDeleted` = true
+			AND `isDeleted` = false
 			<if test="tagId != null">
 			AND `tagId` = #{tagId}
 			</if>
