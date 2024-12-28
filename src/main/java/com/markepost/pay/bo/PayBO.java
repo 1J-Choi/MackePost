@@ -124,4 +124,9 @@ public class PayBO {
 		
 		return payPage;
 	}
+	
+	public int failOldPay() {
+		LocalDateTime limitTime = LocalDateTime.now().minusMinutes(10);
+		return payRepository.updateOldPayStatus("FAIL", limitTime);
+	}
 }
