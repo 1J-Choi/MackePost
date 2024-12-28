@@ -83,6 +83,10 @@ public class PayBO {
 			response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 			log.info("############## " + response.body());
 			if(response.statusCode() != 200) {
+				pay = pay.toBuilder()
+						.payStatus(PayStatus.FAIL)
+						.build();
+				payRepository.save(pay);
 				return -2;
 			}
 		} catch (IOException e) {
