@@ -58,10 +58,18 @@ public class PointController {
 			RedirectAttributes redirectAttributes) {
 		int userId = (int) session.getAttribute("userId");
 		
-		int point = payBO.paySuccess(orderId, payId, amount, userId);
+		int point = payBO.paySuccess(orderId, payId, amount, userId, paymentKey);
+		
+		String suspendMessage = null;
 		
 		if(point == -1) { // 잘못된 충전 요청일 경우
-			redirectAttributes.addFlashAttribute("suspendMessage", "잘못된 포인트 충전 요청입니다.");
+			suspendMessage = "잘못된 포인트 충전 요청입니다.";
+		} else if(point == -2) { // 충전 중 오류 발생했을 경우
+			suspendMessage = "충전중 오류가 발생했습니다.";
+		}
+		
+		if(suspendMessage != null) {
+			redirectAttributes.addFlashAttribute("suspendMessage", suspendMessage);
 			return "redirect:/suspend/suspendView";
 		}
 		

@@ -1,8 +1,15 @@
 package com.markepost.pay.bo;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,14 +21,19 @@ import com.markepost.pay.repository.PayRepository;
 import com.markepost.point.bo.PointBO;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional
 public class PayBO {
 	private final PayRepository payRepository;
 	private final RandomService randomService;
 	private final PointBO pointBO;
+	
+	@Value("${payment.toss.test_secret_api_key}")
+	private String secretKey;
 	
 	public PayEntity addPay(int amount, int userId) {
 		// 랜덤 orderId 생성하기
@@ -44,7 +56,8 @@ public class PayBO {
 		return payRepository.save(pay);
 	}
 	
-	public int paySuccess(String orderId, int payId, int amount, int userId) {
+	public int paySuccess(String orderId, int payId, int amount, int userId, 
+			String paymentKey) {
 		PayEntity pay = payRepository.findById(payId).orElse(null);
 		
 		// 기존 결재 요청과 맞는 정보인지 체크
@@ -53,6 +66,31 @@ public class PayBO {
 			// 해당 조건을 해당할시 아래 과정 진행하지 않고 나가버림
 			return -1;
 		}
+		
+		// scretKey의 base64 인코딩
+		String encondingSecretKey = Base64.getEncoder().encodeToString((secretKey+":").getBytes());
+		
+		HttpRequest request = HttpRequest.newBuilder()
+			    .uri(URI.create("https://api.tosspayments.com/v1/payments/confirm"))
+			    .header("Authorization", "Basic " + encondingSecretKey)
+			    .header("Content-Type", "application/json")
+			    .method("POST", HttpRequest.BodyPublishers.ofString("{\"paymentKey\":\"" + paymentKey 
+			    		+ "\",\"amount\":" + amount 
+			    		+ ",\"orderId\":\"" + orderId + "\"}"))
+			    .build();
+		HttpResponse<String> response;
+		try {
+			response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+			log.info("############## " + response.body());
+			if(response.statusCode() != 200) {
+				return -2;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		
 		pay = pay.toBuilder()
 				.payStatus(PayStatus.SUCCESS)
