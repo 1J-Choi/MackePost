@@ -8,6 +8,6 @@ public class PaymentConfig {
 	@Value("${payment.toss.test_client_api_key}")
 	private String ClientKey;
 	
-	@Value("${payment.toss.test_secreate_api_key}")
+	@Value("${payment.toss.test_secret_api_key}")
 	private String SecretKey;
 }
