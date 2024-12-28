@@ -231,7 +231,7 @@
 					
 				</div>
 				<!-- 댓글 입력창 -->
-				<div class="input-group mt-2">
+				<div class="input-group mt-2" th:if="${session.userId != null}">
 					<input type="text" id="comment" class="form-control">
 					<div class="input-group-append">
 						<button type="button" id="commentSubmitBtn" class="btn btn-success" th:data-post-id="${postDetail.post.id}">등록</button>
