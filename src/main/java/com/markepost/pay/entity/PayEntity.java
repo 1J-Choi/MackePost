@@ -45,6 +45,9 @@ public class PayEntity {
 	@Column(name = "payStatus")
 	private PayStatus payStatus;
 	
+	@Column(name = "expiredAt")
+	private LocalDateTime expiredAt;
+	
 	@Column(name = "createdAt")
 	@CreationTimestamp
 	private LocalDateTime createdAt;

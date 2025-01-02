@@ -53,17 +53,19 @@ public class ConfirmBO {
 		mailService.mailSend(email, "MarkePost 인증코드 메일입니다.", content);
 		
 		// confirm 정보를 저장하기
+		LocalDateTime nowTime = LocalDateTime.now();
 		ConfirmEntity newConfirm = ConfirmEntity.builder()
 				.userId(userId)
 				.confirmCode(confirmCode)
-				.createdAt(LocalDateTime.now())
+				.createdAt(nowTime)
+				.expiredAt(nowTime.plusMinutes(10))
 				.build();
 		
 		return confirmRepository.save(newConfirm);
 	}
 	
 	public int deleteOldConfirm() {
-		LocalDateTime limitTime = LocalDateTime.now().minusMinutes(10);
-        return confirmRepository.deleteByCreatedAtBefore(limitTime);
+		LocalDateTime limitTime = LocalDateTime.now();
+        return confirmRepository.deleteByExpiredAtBefore(limitTime);
 	}
 }
