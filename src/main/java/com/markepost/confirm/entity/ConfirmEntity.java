@@ -32,4 +32,7 @@ public class ConfirmEntity {
 	@Column(name = "createdAt")
 	@CreationTimestamp
 	private LocalDateTime createdAt;
+	
+	@Column(name = "expiredAt")
+	private LocalDateTime expiredAt;
 }

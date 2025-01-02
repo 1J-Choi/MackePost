@@ -23,7 +23,7 @@ public interface PayRepository extends JpaRepository<PayEntity, Integer>{
 			@Param("offset") int offset);
 	
 	@Modifying
-    @Query(value = "UPDATE pay SET payStatus = :status " 
-	+ "WHERE createdAt < :limitTime AND payStatus = 'REQUEST'", nativeQuery = true)
+    @Query(value = "UPDATE pay SET payStatus = :status, updatedAt = NOW() " 
+	+ "WHERE expiredAt < :limitTime AND payStatus = 'REQUEST'", nativeQuery = true)
     public int updateOldPayStatus(@Param("status") String status, @Param("limitTime") LocalDateTime limitTime);
 }
