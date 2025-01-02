@@ -44,13 +44,15 @@ public class PayBO {
 		String data = eng_lower + eng_upper + number;
 		String orderId = randomService.createRandCode(data, 10);
 		
+		LocalDateTime nowTime = LocalDateTime.now();
 		PayEntity pay = PayEntity.builder()
 				.orderId(orderId)
 				.userId(userId)
 				.amount(amount)
 				.payStatus(PayStatus.REQUEST)
-				.createdAt(LocalDateTime.now())
-				.updatedAt(LocalDateTime.now())
+				.expiredAt(nowTime.plusMinutes(10))
+				.createdAt(nowTime)
+				.updatedAt(nowTime)
 				.build();
 		
 		return payRepository.save(pay);
@@ -85,6 +87,7 @@ public class PayBO {
 			if(response.statusCode() != 200) {
 				pay = pay.toBuilder()
 						.payStatus(PayStatus.FAIL)
+						.updatedAt(LocalDateTime.now())
 						.build();
 				payRepository.save(pay);
 				return -2;
@@ -98,6 +101,7 @@ public class PayBO {
 		
 		pay = pay.toBuilder()
 				.payStatus(PayStatus.SUCCESS)
+				.updatedAt(LocalDateTime.now())
 				.build();
 		payRepository.save(pay);
 		
@@ -109,6 +113,7 @@ public class PayBO {
 		
 		pay = pay.toBuilder()
 				.payStatus(PayStatus.FAIL)
+				.updatedAt(LocalDateTime.now())
 				.build();
 		payRepository.save(pay);
 	}
@@ -126,7 +131,7 @@ public class PayBO {
 	}
 	
 	public int failOldPay() {
-		LocalDateTime limitTime = LocalDateTime.now().minusMinutes(10);
+		LocalDateTime limitTime = LocalDateTime.now();
 		return payRepository.updateOldPayStatus("FAIL", limitTime);
 	}
 }
