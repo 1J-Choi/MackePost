@@ -33,6 +33,7 @@ public class ConfirmEntity {
 	@CreationTimestamp
 	private LocalDateTime createdAt;
 	
+	// 삭제 예정시간 추가
 	@Column(name = "expiredAt")
 	private LocalDateTime expiredAt;
 }
